@@ -1,6 +1,6 @@
 {
     "name": "bot-layout-ts",
-    "version": "0.0.0",
+    "version": "1.0.0",
     "description": "The typescript discord bot layout",
     "main": "dist/index.js",
     "engines": {
