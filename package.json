@@ -1,0 +1,33 @@
+{
+    "name": "bot-layout-ts",
+    "version": "0.0.0",
+    "description": "The typescript discord bot layout",
+    "main": "dist/index.js",
+    "engines": {
+        "node": ">=16.9.0"
+    },
+    "scripts": {
+        "lint": "gts lint",
+        "fix": "gts fix",
+        "build": "gts clean && tsc",
+        "dev": "nodemon --watch \"src/**\" --ext \"ts\" --exec \"ts-node src/index.ts\"",
+        "start": "node dist/index.js"
+    },
+    "author": "Jarco-dev",
+    "dependencies": {
+        "@prisma/client": "^4.1.1",
+        "discord.js": "^14.1.2",
+        "dotenv": "^16.0.1",
+        "moment": "^2.29.4"
+    },
+    "devDependencies": {
+        "@types/node": "^16.11.47",
+        "copyfiles": "^2.4.1",
+        "gts": "^3.1.1",
+        "nodemon": "^2.0.19",
+        "prisma": "^4.1.1",
+        "rimraf": "^3.0.2",
+        "ts-node": "^10.9.1",
+        "typescript": "^4.7.4"
+    }
+}
