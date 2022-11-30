@@ -1,7 +1,3 @@
-# bot-layout-ts
-
-A basic layout for a discord bot using typescript
-
 # To do before starting development
 
 * Enter a name, version and description in `package.json`
@@ -13,9 +9,9 @@ A basic layout for a discord bot using typescript
 
 --------------------------------------------------------------
 
-# bot-layout-ts
+# Salad-bot
 
-The bot-layout-ts discord bot
+The salad discord bot
 
 # Compiling
 
@@ -30,8 +26,6 @@ The bot-layout-ts discord bot
 * Remove `.example` from `.env.example`
 * Open a terminal and navigate to the bots folder
 * Execute `npm i --production` and wait till it's done
-* Execute `prisma migrate deploy` and wait till it's done
-* Execute `prisma generate` and wait till it's done
 * You're ready to start the bot!
 
 # Starting
