@@ -17,8 +17,13 @@ class PCalcCommand extends BaseCommand {
                         .setDescription("The starting prestige level")
                         .setRequired(true)
                 )
-                .addNumberOption(option => option.setName("to").setDescription("The final prestige level").setRequired(true)),
-            status: "DEV"
+                .addNumberOption(option =>
+                    option
+                        .setName("to")
+                        .setDescription("The final prestige level")
+                        .setRequired(true)
+                ),
+            status: "ENABLED"
         });
     }
 
@@ -31,32 +36,55 @@ class PCalcCommand extends BaseCommand {
         const to = BigInt(i.options.getNumber("to", true));
 
         if (from <= 0n || to <= 0n) {
-            this.sender.reply(i, {content: "The prestige count can't be lower than 0"}, {msgType: "INVALID", method: "EDIT_REPLY"});
+            this.sender.reply(
+                i,
+                { content: "The prestige count can't be lower than 0" },
+                { msgType: "INVALID", method: "EDIT_REPLY" }
+            );
             return;
         }
 
         if (from > to) {
-            this.sender.reply(i, {content: "The FROM prestige can't be lower than the TO prestige"}, {msgType: "INVALID", method: "EDIT_REPLY"});
+            this.sender.reply(
+                i,
+                {
+                    content:
+                        "The FROM prestige can't be lower than the TO prestige"
+                },
+                { msgType: "INVALID", method: "EDIT_REPLY" }
+            );
             return;
         }
 
         if (to - from > 10000000n) {
-            this.sender.reply(i, {content: "The difference between the two prestiges can't be higher than 10 million"}, {msgType: "INVALID", method: "EDIT_REPLY"});
+            this.sender.reply(
+                i,
+                {
+                    content:
+                        "The difference between the two prestiges can't be higher than 10 million"
+                },
+                { msgType: "INVALID", method: "EDIT_REPLY" }
+            );
             return;
         }
 
         // Calculate price
-        console.time('test');
+        console.time("test");
         let total = 0n;
         for (let i = from + 1n; i < to + 1n; i++) {
             total += this.base + this.increase * i;
         }
-        console.timeEnd('test');
+        console.timeEnd("test");
 
         // Send result
-        const embed = this.global.defaultEmbed()
-            .setDescription(`The total price to go from \`p${from}\` to \`p${to}\` is \`$${this.formatNumber(total)}\``)
-        this.sender.reply(i, {embeds: [embed]}, {method: "EDIT_REPLY"});
+        const embed = this.global
+            .defaultEmbed()
+            .setDescription(
+                `The total price to go from \`p${from}\` to \`p${to}\` is \`$${this.formatNumber(
+                    total
+                )}\``
+            );
+        this.sender.reply(i, { embeds: [embed] }, { method: "EDIT_REPLY" });
     }
 
     formatNumber(number: bigint): string {
