@@ -5,10 +5,10 @@ import "dotenv/config";
 
 class SecretConfig {
     public DISCORD_BOT_TOKEN = process.env.DISCORD_BOT_TOKEN as string;
-    public DATABASE_URL = process.env.DATABASE_URL as string;
-    public SHADOW_DATABASE_URL = process.env.SHADOW_DATABASE_URL as
-        | string
-        | undefined;
+    // public DATABASE_URL = process.env.DATABASE_URL as string;
+    // public SHADOW_DATABASE_URL = process.env.SHADOW_DATABASE_URL as
+    //     | string
+    //     | undefined;
     public LOG_LEVEL = process.env.LOG_LEVEL as LogLevel;
     public CMD_LOAD_LEVEL = process.env.CMD_LOAD_LEVEL as CommandLoadLevel;
     public CMD_DEV_GUILD = process.env.CMD_DEV_GUILD as Snowflake | undefined;
@@ -22,9 +22,9 @@ class SecretConfig {
             errors.push("DISCORD_BOT_TOKEN is required but not given");
         }
 
-        if (!this.DATABASE_URL) {
-            errors.push("DATABASE_URL is required but not given");
-        }
+        // if (!this.DATABASE_URL) {
+        //     errors.push("DATABASE_URL is required but not given");
+        // }
 
         if (!this.LOG_LEVEL) {
             errors.push("LOG_LEVEL is required but not given");

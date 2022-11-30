@@ -12,7 +12,7 @@ abstract class BaseCommand {
     public status: CommandStatus;
 
     public client = Client;
-    public prisma = Client.prisma;
+    // public prisma = Client.prisma;
     public sConfig = Client.sConfig;
     public config = Client.config;
     public logger = Client.logger;

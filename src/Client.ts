@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+// import { PrismaClient } from "@prisma/client";
 import { Client as DiscordClient } from "discord.js";
 import CommandLoader from "./commands/CommandLoader";
 import config from "./config";
@@ -13,7 +13,7 @@ class Client extends DiscordClient {
     public sConfig = new SecretConfig();
     public config = config;
     public logger = new Logger();
-    public prisma = new PrismaClient();
+    // public prisma = new PrismaClient();
     public sender = new Sender(this);
     public global = new Global(this);
     public commandLoader = new CommandLoader(this);
@@ -30,11 +30,11 @@ class Client extends DiscordClient {
         this.sConfig.validate(this.logger);
 
         // Database
-        this.prisma
-            .$connect()
-            .catch((err: unknown) =>
-                this.logger.error("Error while connecting to database", err)
-            );
+        // this.prisma
+        //     .$connect()
+        //     .catch((err: unknown) =>
+        //         this.logger.error("Error while connecting to database", err)
+        //     );
 
         // Loaders
         this.commandLoader.loadAll();
