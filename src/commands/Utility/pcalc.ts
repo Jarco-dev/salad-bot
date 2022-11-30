@@ -69,12 +69,10 @@ class PCalcCommand extends BaseCommand {
         }
 
         // Calculate price
-        console.time("test");
         let total = 0n;
         for (let i = from + 1n; i < to + 1n; i++) {
             total += this.base + this.increase * i;
         }
-        console.timeEnd("test");
 
         // Send result
         const embed = this.global
