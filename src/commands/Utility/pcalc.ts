@@ -28,7 +28,7 @@ class PCalcCommand extends BaseCommand {
                         .setDescription("The balance you have in billions")
                 )
                 .addBooleanOption(option=>option.setName('gang').setDescription('Calculate gang prestiges')),
-            status: "DEV"
+            status: "ENABLED"
         });
     }
 
