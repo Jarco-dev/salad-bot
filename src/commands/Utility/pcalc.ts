@@ -26,8 +26,9 @@ class PCalcCommand extends BaseCommand {
                     option
                         .setName("balance")
                         .setDescription("The balance you have in billions")
-                ),
-            status: "ENABLED"
+                )
+                .addBooleanOption(option=>option.setName('gang').setDescription('Calculate gang prestiges')),
+            status: "DEV"
         });
     }
 
@@ -43,6 +44,7 @@ class PCalcCommand extends BaseCommand {
         const balance = i.options.getNumber("balance", false)
             ? BigInt(i.options.getNumber("balance", false) as number)
             : undefined;
+        const gang = i.options.getBoolean("gang", false);
 
         if (!to && !balance) {
             this.sender.reply(
@@ -101,7 +103,7 @@ class PCalcCommand extends BaseCommand {
         if (to) {
             // Calculate
             let total = 0n;
-            for (let i = from + 1n; i < to + 1n; i++) {
+            for (let i = from + ((gang) ? 1n : 0n); i < to + ((gang) ? 1n : 0n); i++) {
                 total += this.base + this.increase * i;
             }
 
@@ -122,7 +124,7 @@ class PCalcCommand extends BaseCommand {
             let total = 0n;
             let maxPrestige;
             const maxTotal = balance * 1000000000n;
-            for (let i = from + 1n; i < 10000000n + 1n; i++) {
+            for (let i = from + ((gang) ? 1n : 0n); i < 10000000n + ((gang) ? 1n : 0n); i++) {
                 if (total + this.base + this.increase * i > maxTotal) {
                     maxPrestige = i - 1n;
                     break;
