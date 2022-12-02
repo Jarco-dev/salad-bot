@@ -21,8 +21,13 @@ class PCalcCommand extends BaseCommand {
                     option
                         .setName("to")
                         .setDescription("The final prestige level")
-                        .setRequired(true)
-                ),
+                )
+                .addNumberOption(option =>
+                    option
+                        .setName("balance")
+                        .setDescription("The balance you have in billions")
+                )
+                .addBooleanOption(option=>option.setName('gang').setDescription('Calculate gang prestiges')),
             status: "ENABLED"
         });
     }
@@ -33,58 +38,120 @@ class PCalcCommand extends BaseCommand {
 
         // Validate options
         const from = BigInt(i.options.getNumber("from", true));
-        const to = BigInt(i.options.getNumber("to", true));
+        const to = i.options.getNumber("to", false)
+            ? BigInt(i.options.getNumber("to", false) as number)
+            : undefined;
+        const balance = i.options.getNumber("balance", false)
+            ? BigInt(i.options.getNumber("balance", false) as number)
+            : undefined;
+        const gang = i.options.getBoolean("gang", false);
 
-        if (from <= 0n || to <= 0n) {
+        if (!to && !balance) {
             this.sender.reply(
                 i,
-                { content: "The prestige count can't be lower than 0" },
-                { msgType: "INVALID", method: "EDIT_REPLY" }
+                { content: "You must provide at least 1 of TO or BALANCE" },
+                { method: "EDIT_REPLY", msgType: "INVALID" }
             );
             return;
         }
 
-        if (from > to) {
+        if (to && balance) {
             this.sender.reply(
                 i,
-                {
-                    content:
-                        "The FROM prestige can't be lower than the TO prestige"
-                },
-                { msgType: "INVALID", method: "EDIT_REPLY" }
+                { content: "You can't provide both TO and BALANCE at once" },
+                { method: "EDIT_REPLY", msgType: "INVALID" }
             );
             return;
         }
 
-        if (to - from > 10000000n) {
-            this.sender.reply(
-                i,
-                {
-                    content:
-                        "The difference between the two prestiges can't be higher than 10 million"
-                },
-                { msgType: "INVALID", method: "EDIT_REPLY" }
-            );
-            return;
+        if (to) {
+            if (from <= 0n || to <= 0n) {
+                this.sender.reply(
+                    i,
+                    { content: "The prestige count can't be lower than 0" },
+                    { msgType: "INVALID", method: "EDIT_REPLY" }
+                );
+                return;
+            }
+
+            if (from > to) {
+                this.sender.reply(
+                    i,
+                    {
+                        content:
+                            "The FROM prestige can't be lower than the TO prestige"
+                    },
+                    { msgType: "INVALID", method: "EDIT_REPLY" }
+                );
+                return;
+            }
+
+            if (to - from > 10000000n) {
+                this.sender.reply(
+                    i,
+                    {
+                        content:
+                            "The difference between the two prestiges can't be higher than 10 million"
+                    },
+                    { msgType: "INVALID", method: "EDIT_REPLY" }
+                );
+                return;
+            }
         }
 
-        // Calculate price
-        console.time("test");
-        let total = 0n;
-        for (let i = from + 1n; i < to + 1n; i++) {
-            total += this.base + this.increase * i;
-        }
-        console.timeEnd("test");
+        // Calculate prestige based on from and to
+        if (to) {
+            // Calculate
+            let total = 0n;
+            for (let i = from + ((gang) ? 1n : 0n); i < to + ((gang) ? 1n : 0n); i++) {
+                total += this.base + this.increase * i;
+            }
 
-        // Send result
-        const embed = this.global
-            .defaultEmbed()
-            .setDescription(
-                `The total price to go from \`p${from}\` to \`p${to}\` is \`$${this.formatNumber(
-                    total
-                )}\``
-            );
-        this.sender.reply(i, { embeds: [embed] }, { method: "EDIT_REPLY" });
+            // Send result
+            const embed = this.global
+                .defaultEmbed()
+                .setDescription(
+                    `The total price to go from \`p${from}\` to \`p${to}\` is \`$${this.formatNumber(
+                        total
+                    )}\``
+                );
+            this.sender.reply(i, { embeds: [embed] }, { method: "EDIT_REPLY" });
+        }
+
+        // Calculate max prestige with given balance
+        if (balance) {
+            // Calculate
+            let total = 0n;
+            let maxPrestige;
+            const maxTotal = balance * 1000000000n;
+            for (let i = from + ((gang) ? 1n : 0n); i < 10000000n + ((gang) ? 1n : 0n); i++) {
+                if (total + this.base + this.increase * i > maxTotal) {
+                    maxPrestige = i - 1n;
+                    break;
+                }
+                total += this.base + this.increase * i;
+            }
+
+            if (!maxPrestige) {
+                this.sender.reply(
+                    i,
+                    {
+                        content:
+                            "You're able to prestige 10.000.000 times or more, the balance is too high to process"
+                    },
+                    { msgType: "INVALID", method: "EDIT_REPLY" }
+                );
+                return;
+            }
+
+            // Send result
+            const embed = this.global
+                .defaultEmbed()
+                .setDescription(
+                    `Your balance can get you upto \`p${maxPrestige}\``
+                );
+            this.sender.reply(i, { embeds: [embed] }, { method: "EDIT_REPLY" });
+        }
     }
 
     formatNumber(number: bigint): string {
