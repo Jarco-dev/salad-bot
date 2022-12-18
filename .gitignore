@@ -4,6 +4,7 @@
 
 ### Repo specific ###
 secret/*.js
+cache
 
 ### Node ###
 # Logs

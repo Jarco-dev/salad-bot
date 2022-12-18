@@ -194,6 +194,19 @@ class Sender {
         }
     }
 
+    public async msgMcBotManagers(
+        payload: MessageOptions,
+        options?: SenderMessageOptions
+    ): Promise<Promise<void | Message>[]> {
+        return this.client.sConfig.mcBotManagers.reduce(
+            (a: Promise<void | Message>[], userId: Snowflake) => {
+                a.push(this.msgUser(userId, payload, options).catch(() => {}));
+                return a;
+            },
+            []
+        );
+    }
+
     private _sendMsg(
         channel: TextBasedChannel,
         payload: MessageOptions | ReplyMessageOptions,

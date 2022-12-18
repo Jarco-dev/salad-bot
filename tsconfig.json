@@ -1,12 +1,12 @@
 {
     "extends": "./node_modules/gts/tsconfig-google.json",
     "compilerOptions": {
-        "allowJs": false, // check
-        "esModuleInterop": true, // check
-        "target": "ES2021", // check
-        "baseUrl": ".", // check
-        "outDir": "dist", // check
-        "removeComments": true, // check
+        "allowJs": false,
+        "esModuleInterop": true,
+        "target": "ES2021",
+        "baseUrl": ".",
+        "outDir": "dist",
+        "removeComments": true,
         "declaration": false,
         "sourceMap": false
     },

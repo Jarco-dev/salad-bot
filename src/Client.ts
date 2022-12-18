@@ -8,6 +8,7 @@ import Global from "./utils/Global";
 import Logger from "./utils/Logger";
 import SecretConfig from "./utils/SecretConfig";
 import Sender from "./utils/Sender";
+import McBotManager from "./utils/McBotManager";
 
 class Client extends DiscordClient {
     public sConfig = new SecretConfig();
@@ -19,6 +20,7 @@ class Client extends DiscordClient {
     public commandLoader = new CommandLoader(this);
     public eventLoader = new EventLoader(this);
     public featureLoader = new FeatureLoader(this);
+    public mcBots = new McBotManager(this);
 
     constructor() {
         super(config.CLIENT_OPTIONS);
