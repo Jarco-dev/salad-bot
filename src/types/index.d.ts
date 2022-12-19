@@ -18,6 +18,7 @@ export interface Config {
     };
     CLIENT_OPTIONS: ClientOptions;
     VERSION: string;
+    botAccountCacheFolder: string;
 }
 
 export interface SenderMessageOptions {
@@ -28,6 +29,13 @@ export interface SenderMessageOptions {
 export interface SenderReplyOptions extends SenderMessageOptions {
     method?: SenderReplyMethod;
 }
+
+export type ProxyOptions = {
+    host: string;
+    port: number;
+    userId?: string;
+    password?: string;
+};
 
 export type SenderMessageType = "SUCCESS" | "INVALID" | "ERROR" | "TIME";
 

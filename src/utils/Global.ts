@@ -283,6 +283,10 @@ class Global {
                   components as SelectMenuBuilder[]
               );
     }
+
+    public sleep = (ms: number) => {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    };
 }
 
 export default Global;
