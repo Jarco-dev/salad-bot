@@ -1,4 +1,4 @@
-import type { Config } from "./types";
+import type { Config } from "@/types";
 
 const config: Config = {
     // Bot colors
@@ -38,10 +38,7 @@ const config: Config = {
     },
 
     // Bot version (acquired from package.json)
-    VERSION: require("../package.json").version,
-
-    // Misc
-    botAccountCacheFolder: process.cwd() + "/cache/botAccounts"
+    VERSION: require("../package.json").version
 };
 
 export default config;

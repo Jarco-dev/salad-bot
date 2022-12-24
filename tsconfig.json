@@ -4,11 +4,18 @@
         "allowJs": false,
         "esModuleInterop": true,
         "target": "ES2021",
-        "baseUrl": ".",
+        "rootDir": "./src",
         "outDir": "dist",
-        "removeComments": true,
+        "baseUrl": ".",
+        "skipLibCheck": true,
+        "sourceMap": false,
         "declaration": false,
-        "sourceMap": false
+        "paths": {
+            "@/interactions/*": ["src/interactions/*"],
+            "@/classes": ["src/classes"],
+            "@/structures": ["src/classes/structures"],
+            "@/types": ["src/types"],
+        }
     },
     "include": [
         "src/**/*"

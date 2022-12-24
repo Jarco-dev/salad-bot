@@ -1,6 +1,7 @@
-import Client from "./Client";
+import { Client } from "@/classes";
 
 const client = new Client();
+export default client;
 
 // Fix console being ugly on pterodactyl
 console.log("\n");
@@ -8,8 +9,6 @@ console.log("\n");
 // Authorise the bot
 client.logger.info("Connecting to discord...");
 client.login(client.sConfig.DISCORD_BOT_TOKEN);
-
-export default client;
 
 // Catch any uncaught errors
 process.on("uncaughtException", err => {
