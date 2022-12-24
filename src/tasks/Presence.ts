@@ -1,4 +1,4 @@
-import type { TimerTaskResult } from "@/types";
+import { TimerTaskResult } from "@/types";
 import { Task } from "@/structures";
 import { ActivityType } from "discord.js";
 

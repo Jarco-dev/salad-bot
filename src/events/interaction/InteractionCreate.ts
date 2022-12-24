@@ -1,5 +1,5 @@
-import type { HandlerResult } from "@/types";
-import type { Interaction } from "discord.js";
+import { HandlerResult } from "@/types";
+import { Interaction } from "discord.js";
 import { EventHandler } from "@/structures";
 
 export default class InteractionCreateEventHandler extends EventHandler<"interactionCreate"> {

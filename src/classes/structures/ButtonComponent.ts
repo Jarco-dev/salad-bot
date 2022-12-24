@@ -1,6 +1,6 @@
+import Client from "../../index";
 import { HandlerResult } from "@/types";
 import { ButtonBuilder, ButtonInteraction } from "discord.js";
-import Client from "../../index";
 
 export abstract class ButtonComponent {
     protected readonly client = Client;

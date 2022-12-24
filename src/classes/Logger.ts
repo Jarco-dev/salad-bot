@@ -1,7 +1,7 @@
-import type { LogLevel } from "@/types";
 import moment from "moment";
 import fs from "fs";
 import path from "path";
+import { LogLevel } from "@/types";
 
 export class Logger {
     private readonly level: 0 | 1 | 2 | 3 | 4;

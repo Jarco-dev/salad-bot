@@ -1,4 +1,4 @@
-import type {
+import {
     ButtonInteraction,
     CommandInteraction,
     InteractionReplyOptions,
@@ -12,8 +12,8 @@ import type {
     MessageCreateOptions,
     ModalSubmitInteraction
 } from "discord.js";
-import type { Client } from "./";
-import type { SenderMessageOptions, SenderReplyOptions } from "@/types";
+import { Client } from "./";
+import { SenderMessageOptions, SenderReplyOptions } from "@/types";
 import { EmbedBuilder, Message } from "discord.js";
 
 export class Sender {

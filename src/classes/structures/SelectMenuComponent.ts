@@ -1,6 +1,6 @@
+import Client from "../../index";
 import { HandlerResult } from "@/types";
 import { SelectMenuBuilder, SelectMenuInteraction } from "discord.js";
-import Client from "../../index";
 
 export abstract class SelectMenuComponent {
     protected readonly client = Client;

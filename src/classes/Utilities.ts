@@ -1,5 +1,5 @@
-import type { Client } from "@/classes";
-import type {
+import { Client } from "@/classes";
+import {
     ActionRow,
     ButtonInteraction,
     CommandInteraction,

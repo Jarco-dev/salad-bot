@@ -1,5 +1,5 @@
-import { TimerTaskResult } from "@/types";
 import Client from "../../index";
+import { TimerTaskResult } from "@/types";
 
 export abstract class Task {
     protected readonly client = Client;

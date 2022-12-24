@@ -1,4 +1,4 @@
-import type { HandlerResult } from "@/types";
+import { HandlerResult } from "@/types";
 import { ChatInputCommand } from "@/structures";
 import { SlashCommandBuilder, ChatInputCommandInteraction } from "discord.js";
 

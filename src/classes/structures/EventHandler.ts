@@ -1,6 +1,6 @@
+import Client from "../../index";
 import { HandlerResult } from "@/types";
 import { ClientEvents } from "discord.js";
-import Client from "../../index";
 
 export abstract class EventHandler<Event extends keyof ClientEvents> {
     protected readonly client = Client;

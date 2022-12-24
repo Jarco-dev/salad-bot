@@ -1,8 +1,8 @@
-import type { Client } from "@/classes";
-import path from "path";
-import fs from "fs";
 import * as process from "process";
 import cron from "node-cron";
+import path from "path";
+import fs from "fs";
+import { Client } from "@/classes";
 import { Task as TaskStructure } from "@/structures";
 
 export class TaskLoader {

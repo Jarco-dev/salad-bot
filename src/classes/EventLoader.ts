@@ -1,6 +1,7 @@
-import type Client from "../index";
+import Client from "../index";
 import fs from "fs";
 import path from "path";
+import { promises as fsPromise } from "fs";
 import { EventHandler as EventHandlerStructure } from "@/structures";
 
 export class EventLoader {

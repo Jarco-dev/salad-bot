@@ -1,6 +1,6 @@
+import Client from "../../index";
 import { HandlerResult } from "@/types";
 import { ModalBuilder, ModalSubmitInteraction } from "discord.js";
-import Client from "../../index";
 
 export abstract class Modal {
     protected readonly client = Client;

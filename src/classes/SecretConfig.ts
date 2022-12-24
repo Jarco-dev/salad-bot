@@ -1,6 +1,6 @@
-import type { LogLevel } from "@/types";
-import type { Logger } from "./Logger";
 import "dotenv/config";
+import { LogLevel } from "@/types";
+import { Logger } from "./Logger";
 
 export class SecretConfig {
     public DISCORD_BOT_TOKEN = process.env.DISCORD_BOT_TOKEN as string;

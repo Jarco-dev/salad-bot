@@ -1,5 +1,5 @@
-import { EventHandler } from "@/structures";
 import { HandlerResult } from "@/types";
+import { EventHandler } from "@/structures";
 
 export default class ReadyEventHandler extends EventHandler<"ready"> {
     constructor() {

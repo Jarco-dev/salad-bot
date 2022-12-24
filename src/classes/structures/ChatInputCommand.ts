@@ -1,6 +1,6 @@
+import Client from "../../index";
 import { HandlerResult } from "@/types";
 import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
-import Client from "../../index";
 
 export abstract class ChatInputCommand {
     protected readonly client = Client;

@@ -1,10 +1,10 @@
+import Client from "../../index";
 import { HandlerResult } from "@/types";
 import {
     ApplicationCommandType,
     ContextMenuCommandBuilder,
     UserContextMenuCommandInteraction
 } from "discord.js";
-import Client from "../../index";
 
 export abstract class UserContextMenuCommand {
     protected readonly client = Client;

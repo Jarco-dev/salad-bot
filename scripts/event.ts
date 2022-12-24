@@ -1,7 +1,7 @@
 import * as handlebars from "handlebars";
-import { promptInput, promptList } from "./utils/prompts";
 import fs from "fs";
 import path from "path";
+import { promptInput, promptList } from "./utils/prompts";
 import { execSync } from "child_process";
 import { getDirs } from "./utils/getDirs";
 
