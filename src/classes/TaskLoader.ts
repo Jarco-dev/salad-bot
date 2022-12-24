@@ -15,7 +15,7 @@ export class TaskLoader {
     constructor(client: Client) {
         this.client = client;
         this.tasks = {};
-        this.path = path.join(process.cwd(), "src", "tasks", "tasks");
+        this.path = path.join(process.cwd(), "src", "tasks");
     }
 
     public loadAllTasks(): void {
@@ -23,7 +23,9 @@ export class TaskLoader {
         const items = fs.readdirSync(this.path);
         for (const item of items) {
             // Skip the item if it's a folder
-            if (fs.lstatSync(item).isDirectory()) continue;
+            if (fs.lstatSync(path.join(this.path, item)).isDirectory()) {
+                continue;
+            }
 
             // Load the task
             try {

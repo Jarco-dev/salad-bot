@@ -136,7 +136,7 @@ export class InteractionLoader {
         const loadHandlers = async (dir: string) => {
             // Get all items in the dir
             if (!fs.existsSync(dir)) return;
-            const items = fs.readdirSync(dir);
+            const items = await fsPromise.readdir(dir);
 
             // Loop through all items
             for (const item of items) {

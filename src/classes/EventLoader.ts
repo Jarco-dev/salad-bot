@@ -13,13 +13,13 @@ export class EventLoader {
         this.path = path.join(process.cwd(), "src", "events");
     }
 
-    public loadAllHandlers(): void {
+    public async loadAllHandlers(): Promise<void> {
         // Get all the folders
-        const folders = fs.readdirSync(this.path);
+        const folders = await fsPromise.readdir(this.path);
         for (const folder of folders) {
             // Load the events if it's a folder
-            if (fs.lstatSync(this.path + folder).isDirectory()) {
-                const files = fs.readdirSync(this.path + folder);
+            if (fs.lstatSync(path.join(this.path, folder)).isDirectory()) {
+                const files = fs.readdirSync(path.join(this.path, folder));
                 // Go through all the event files
                 for (const file of files) {
                     // Load the event
@@ -27,7 +27,8 @@ export class EventLoader {
                         // Require EventHandler file
                         const EventHandler = require(path.join(
                             this.path,
-                            `./${folder}/${file}`
+                            folder,
+                            file
                         )).default;
 
                         // Validate that it's a EventHandler class
