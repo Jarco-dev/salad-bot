@@ -1,7 +1,6 @@
 import Client from "../index";
 import fs from "fs";
 import path from "path";
-import { promises as fsPromise } from "fs";
 import { EventHandler as EventHandlerStructure } from "@/structures";
 
 export class EventLoader {
@@ -15,7 +14,7 @@ export class EventLoader {
 
     public async loadAllHandlers(): Promise<void> {
         // Get all the folders
-        const folders = await fsPromise.readdir(this.path);
+        const folders = await fs.promises.readdir(this.path);
         for (const folder of folders) {
             // Load the events if it's a folder
             if (fs.lstatSync(path.join(this.path, folder)).isDirectory()) {

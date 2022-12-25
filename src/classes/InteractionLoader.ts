@@ -1,6 +1,5 @@
 import fs from "fs";
 import path from "path";
-import { HandlerResult } from "@/types";
 import {
     ButtonComponent,
     ChatInputCommand,
@@ -10,7 +9,6 @@ import {
     MessageContextMenuCommand
 } from "@/structures";
 import { Client } from "@/classes";
-import { promises as fsPromise } from "fs";
 import { ApplicationCommandData, ButtonStyle, Interaction } from "discord.js";
 
 interface GroupedHandlers {
@@ -136,7 +134,7 @@ export class InteractionLoader {
         const loadHandlers = async (dir: string) => {
             // Get all items in the dir
             if (!fs.existsSync(dir)) return;
-            const items = await fsPromise.readdir(dir);
+            const items = await fs.promises.readdir(dir);
 
             // Loop through all items
             for (const item of items) {
@@ -167,6 +165,9 @@ export class InteractionLoader {
                                 return;
                             }
 
+                            // Handler is enabled
+                            if (!handler.enabled) continue;
+
                             // Add handler to corresponding group
                             const name =
                                 "name" in handler.data
@@ -187,10 +188,10 @@ export class InteractionLoader {
 
                             // Log loaded message
                             this.client.logger.debug(
-                                `[${
+                                `[InteractionLoader] ${
                                     p.name.charAt(0).toUpperCase() +
                                     p.name.substring(1)
-                                }] ${item} handler loaded`
+                                }: ${item} handler loaded`
                             );
                         }
                     } catch (err) {
@@ -210,7 +211,7 @@ export class InteractionLoader {
         if (i.isButton()) {
             return this.groupedHandlers.buttonComponents[i.customId];
         } else if (i.isChatInputCommand()) {
-            return this.groupedHandlers.selectMenuComponents[i.commandName];
+            return this.groupedHandlers.chatInputCommands[i.commandName];
         } else if (i.isMessageContextMenuCommand()) {
             return this.groupedHandlers.messageContextMenuCommands[
                 i.commandName
@@ -226,27 +227,9 @@ export class InteractionLoader {
         }
     }
 
-    public checkHandlerOptions(
-        i: Interaction,
-        handler: HandlerTypes
-    ): true | HandlerResult {
-        // Check enabled
-        if (!handler.enabled) {
-            return {
-                result: "OTHER",
-                note: "handler disabled"
-            };
-        }
-
-        // Check(s) passed
-        return true;
-    }
-
     public async handleInteractionCreate(i: Interaction): Promise<void> {
         const handler = this.getHandler(i);
         if (!handler) return;
-
-        if (!this.checkHandlerOptions(i, handler)) return;
 
         /**
          * Really tried to prevent just ignoring the type issue below,

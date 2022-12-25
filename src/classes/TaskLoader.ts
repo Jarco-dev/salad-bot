@@ -18,9 +18,9 @@ export class TaskLoader {
         this.path = path.join(process.cwd(), "src", "tasks");
     }
 
-    public loadAllTasks(): void {
+    public async loadAllTasks(): Promise<void> {
         // Get all the tasks
-        const items = fs.readdirSync(this.path);
+        const items = await fs.promises.readdir(this.path);
         for (const item of items) {
             // Skip the item if it's a folder
             if (fs.lstatSync(path.join(this.path, item)).isDirectory()) {
@@ -45,10 +45,12 @@ export class TaskLoader {
                     } else {
                         this.tasks[task.cronExpression] = [task];
                     }
-                }
 
-                // Log loaded message
-                this.client.logger.debug(`[TaskHandler] ${item} task loaded`);
+                    // Log loaded message
+                    this.client.logger.debug(
+                        `[TaskHandler] ${item} task loaded`
+                    );
+                }
             } catch (err) {
                 this.client.logger.error(
                     `Error while trying to load timer task file ${item}`,
@@ -71,7 +73,8 @@ export class TaskLoader {
                             task.run();
                         } catch (err) {
                             this.client.logger.error(
-                                `Error while running ${task.name}`
+                                `Error while running ${task.name}`,
+                                err
                             );
                         }
                     }
