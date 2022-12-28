@@ -45,15 +45,15 @@ export class EventLoader {
                         if (!eventHandler.enabled) continue;
 
                         // Bind event handler
-                        this.client.on(
-                            eventHandler.name,
-                            eventHandler.run.bind(eventHandler)
-                        );
                         this.client.on(eventHandler.name, () => {
                             this.client.logger.verbose(
                                 `[EventHandler] ${file} handler triggered`
                             );
                         });
+                        this.client.on(
+                            eventHandler.name,
+                            eventHandler.run.bind(eventHandler)
+                        );
 
                         // Log loaded message
                         this.client.logger.debug(
