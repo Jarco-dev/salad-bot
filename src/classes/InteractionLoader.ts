@@ -48,8 +48,8 @@ export class InteractionLoader {
             {
                 name: "buttonComponents",
                 folderDir: path.join(
-                    process.cwd(),
-                    "src",
+                    __dirname,
+                    "..",
                     "interactions",
                     "buttonComponents"
                 ),
@@ -60,8 +60,8 @@ export class InteractionLoader {
             {
                 name: "chatInputCommands",
                 folderDir: path.join(
-                    process.cwd(),
-                    "src",
+                    __dirname,
+                    "..",
                     "interactions",
                     "chatInputCommands"
                 ),
@@ -72,8 +72,8 @@ export class InteractionLoader {
             {
                 name: "messageContextMenuCommands",
                 folderDir: path.join(
-                    process.cwd(),
-                    "src",
+                    __dirname,
+                    "..",
                     "interactions",
                     "messageContextMenuCommands"
                 ),
@@ -83,12 +83,7 @@ export class InteractionLoader {
             },
             {
                 name: "modals",
-                folderDir: path.join(
-                    process.cwd(),
-                    "src",
-                    "interactions",
-                    "modals"
-                ),
+                folderDir: path.join(__dirname, "..", "interactions", "modals"),
                 validateHandler: handler => {
                     return handler instanceof Modal;
                 }
@@ -96,8 +91,8 @@ export class InteractionLoader {
             {
                 name: "selectMenuComponents",
                 folderDir: path.join(
-                    process.cwd(),
-                    "src",
+                    __dirname,
+                    "..",
                     "interactions",
                     "selectMenuComponents"
                 ),
@@ -108,8 +103,8 @@ export class InteractionLoader {
             {
                 name: "userContextMenuCommands",
                 folderDir: path.join(
-                    process.cwd(),
-                    "src",
+                    __dirname,
+                    "..",
                     "interactions",
                     "userContextMenuCommands"
                 ),
@@ -146,7 +141,7 @@ export class InteractionLoader {
                 }
 
                 // Load handler if it's a file ending with .ts
-                if (stat.isFile() && item.endsWith(".ts")) {
+                if (stat.isFile()) {
                     let handler: HandlerTypes;
                     try {
                         // Validate that the handler is the correct class type
@@ -248,7 +243,7 @@ export class InteractionLoader {
     }
 
     public async updateApplicationCommands(): Promise<void> {
-        // Client is ready
+        // BedrockProtocol is ready
         await this.client.application?.fetch();
         if (!this.client.isReady() || !this.client.application) {
             this.client.logger.warn(

@@ -1,4 +1,6 @@
 import { Config } from "@/types";
+import { IntentsBitField } from "discord.js";
+import path from "path";
 
 const config: Config = {
     // Bot colors
@@ -29,7 +31,7 @@ const config: Config = {
             // IntentsBitField.Flags.GuildMessages,
             // IntentsBitField.Flags.GuildMessageTyping,
             // IntentsBitField.Flags.GuildPresences,
-            // IntentsBitField.Flags.Guilds,
+            IntentsBitField.Flags.Guilds
             // IntentsBitField.Flags.GuildScheduledEvents,
             // IntentsBitField.Flags.GuildVoiceStates,
             // IntentsBitField.Flags.GuildWebhooks,
@@ -38,7 +40,10 @@ const config: Config = {
     },
 
     // Bot version (acquired from package.json)
-    VERSION: require("../package.json").version
+    VERSION: require(path.join(process.cwd(), "package.json")).version,
+
+    // Mc Bot related
+    BOT_CACHE_FOLDER_PATH: path.join(process.cwd(), ".cache", "nmp")
 };
 
 export default config;

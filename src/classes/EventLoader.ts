@@ -9,7 +9,7 @@ export class EventLoader {
 
     constructor(client: typeof Client) {
         this.client = client;
-        this.path = path.join(process.cwd(), "src", "events");
+        this.path = path.join(__dirname, "..", "events");
     }
 
     public async loadAllHandlers(): Promise<void> {

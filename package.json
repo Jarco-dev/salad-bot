@@ -10,8 +10,12 @@
         "lint": "gts lint",
         "fix": "gts fix",
         "build": "gts clean && tsc --project tsconfig.json && tsc-alias",
-        "start": "node dist/index.js",
+        "start": "node dist/src/index.js",
+        "start:javaProxy": "node ./proxyServer/index.js",
+        "start:bedrockProxy": "node ./relayServer/index.js",
         "dev": "nodemon --watch \"src/**\" --ext \"ts\" --exec \"ts-node -r tsconfig-paths/register ./src/index.ts\"",
+        "dev:javaProxy": "nodemon --watch \"./proxyServer/*\" --ext \"js\" --exec \"node ./proxyServer/index.js\"",
+        "dev:bedrockProxy": "nodemon --watch \"./relayServer/*\" --ext \"js\" --exec \"node ./relayServer/index.js\"",
         "new:task": "ts-node scripts/task.ts",
         "new:event": "ts-node scripts/event.ts",
         "new:interaction": "ts-node scripts/interaction.ts"
@@ -19,9 +23,15 @@
     "author": "Jarco-dev",
     "dependencies": {
         "@prisma/client": "^4.8.0",
+        "@sansamour/node-socks": "^1.1.5",
+        "bedrock-protocol": "^3.22.0",
         "discord.js": "^14.7.1",
+        "dns": "^0.2.2",
         "dotenv": "^16.0.3",
-        "moment": "^2.29.4"
+        "minecraft-protocol": "^1.36.2",
+        "moment": "^2.29.4",
+        "prismarine-chat": "^1.7.2",
+        "socks": "^2.7.1"
     },
     "devDependencies": {
         "@types/inquirer": "^8.2.5",

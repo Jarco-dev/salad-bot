@@ -1,4 +1,3 @@
-import * as process from "process";
 import cron from "node-cron";
 import path from "path";
 import fs from "fs";
@@ -15,7 +14,7 @@ export class TaskLoader {
     constructor(client: Client) {
         this.client = client;
         this.tasks = {};
-        this.path = path.join(process.cwd(), "src", "tasks");
+        this.path = path.join(__dirname, "..", "tasks");
     }
 
     public async loadAllTasks(): Promise<void> {

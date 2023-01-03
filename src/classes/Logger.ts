@@ -71,7 +71,7 @@ export class Logger {
         }
 
         // Create streams
-        const dir = path.join(__dirname, "..", "..", "storage", "logs");
+        const dir = path.join(process.cwd(), "storage", "logs");
         this.combinedLogFile = this.createWriteStream(dir, "combined.log");
         this.errorLogFile = this.createWriteStream(dir, "error.log");
     }
@@ -167,11 +167,17 @@ export class Logger {
             }, []);
 
             return (
-                JSON.stringify({
-                    level: this.levelConfigs[level].name,
-                    dateTime: moment.utc().format("YYYY-MM-DD HH:mm:ss"),
-                    message: logs
-                }).toString() + "\n"
+                JSON.stringify(
+                    {
+                        level: this.levelConfigs[level].name,
+                        dateTime: moment.utc().format("YYYY-MM-DD HH:mm:ss"),
+                        message: logs
+                    },
+                    (key, value) =>
+                        typeof value === "bigint"
+                            ? `${value.toString()}n`
+                            : value
+                ) + "\n"
             );
         }
     }

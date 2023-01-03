@@ -2,7 +2,11 @@ import * as path from "path";
 import * as fs from "fs";
 import * as handlebars from "handlebars";
 import { execSync } from "child_process";
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
 import { promptInput, promptList, promptConfirm } from "./utils/prompts";
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
 import { getDirs } from "./utils/getDirs";
 
 const selections = new Map();
@@ -56,15 +60,13 @@ const interactionTypes = {
         ];
 
     const handlerDir = path.resolve(
-        __dirname,
-        "..",
-        "..",
+        process.cwd(),
         "src",
         "interactions",
         typeSettings.folder
     );
     if (!fs.existsSync(handlerDir)) {
-        fs.mkdirSync(handlerDir);
+        fs.mkdirSync(handlerDir, { recursive: true });
     }
 
     // Collect (sub)directory

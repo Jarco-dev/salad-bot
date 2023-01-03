@@ -4,20 +4,22 @@
         "allowJs": false,
         "esModuleInterop": true,
         "target": "ES2021",
-        "rootDir": "./src",
+        "rootDir": ".",
         "outDir": "dist",
         "baseUrl": ".",
         "skipLibCheck": true,
         "sourceMap": false,
         "declaration": false,
+        "resolveJsonModule": true,
         "paths": {
-            "@/interactions/*": ["src/interactions/*"],
-            "@/classes": ["src/classes"],
-            "@/structures": ["src/classes/structures"],
-            "@/types": ["src/types"],
+            "@/interactions/*": ["./src/interactions/*"],
+            "@/classes": ["./src/classes"],
+            "@/structures": ["./src/classes/structures"],
+            "@/types": ["./src/types"]
         }
     },
     "include": [
-        "src/**/*"
+        "src/**/*",
+        "proxies.json"
     ]
 }

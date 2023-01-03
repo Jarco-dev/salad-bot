@@ -6,7 +6,8 @@ import {
     Utilities,
     InteractionLoader,
     EventLoader,
-    TaskLoader
+    TaskLoader,
+    ProxiesConfig
 } from "@/classes";
 // import { PrismaClient } from "@prisma/client";
 import { Client as DiscordClient } from "discord.js";
@@ -14,6 +15,7 @@ import { Client as DiscordClient } from "discord.js";
 export class Client extends DiscordClient {
     public sConfig = new SecretConfig();
     public config = config;
+    public proxiesConfig = new ProxiesConfig();
     public logger = new Logger(this.sConfig.LOG_LEVEL);
     // public prisma = new PrismaClient();
     public sender = new Sender(this);
@@ -25,8 +27,9 @@ export class Client extends DiscordClient {
     constructor() {
         super(config.CLIENT_OPTIONS);
 
-        // SecretConfig
+        // Configs
         this.sConfig.validate(this.logger);
+        this.proxiesConfig.validate(this.logger);
 
         // Database
         // this.prisma

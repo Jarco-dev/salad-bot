@@ -12,4 +12,5 @@ export interface Config {
     };
     CLIENT_OPTIONS: ClientOptions;
     VERSION: string;
+    BOT_CACHE_FOLDER_PATH: string;
 }
