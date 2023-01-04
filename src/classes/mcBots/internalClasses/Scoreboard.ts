@@ -13,47 +13,27 @@ export class Scoreboard {
             value: number;
         };
     };
-    static readonly byteToPosition: {
-        0: "list";
-        1: "sidebar";
-        2: "belowName";
-        3: "sidebarTeamBlack";
-        4: "sidebarTeamDarkBlue";
-        5: "sidebarTeamDarkGreen";
-        6: "sidebarTeamDarkAqua";
-        7: "sidebarTeamDarkRed";
-        8: "sidebarTeamDarkPurple";
-        9: "sidebarTeamGold";
-        10: "sidebarTeamGray";
-        11: "sidebarTeamDarkGray";
-        12: "sidebarTeamBlue";
-        13: "sidebarTeamGreen";
-        14: "sidebarTeamAqua";
-        15: "sidebarTeamRed";
-        16: "sidebarTeamLightPurple";
-        17: "sidebarTeamYellow";
-        18: "sidebarTeamWhite";
-    } = {
-        0: "list",
-        1: "sidebar",
-        2: "belowName",
-        3: "sidebarTeamBlack",
-        4: "sidebarTeamDarkBlue",
-        5: "sidebarTeamDarkGreen",
-        6: "sidebarTeamDarkAqua",
-        7: "sidebarTeamDarkRed",
-        8: "sidebarTeamDarkPurple",
-        9: "sidebarTeamGold",
-        10: "sidebarTeamGray",
-        11: "sidebarTeamDarkGray",
-        12: "sidebarTeamBlue",
-        13: "sidebarTeamGreen",
-        14: "sidebarTeamAqua",
-        15: "sidebarTeamRed",
-        16: "sidebarTeamLightPurple",
-        17: "sidebarTeamYellow",
-        18: "sidebarTeamWhite"
-    };
+    static readonly byteToPosition = [
+        "list",
+        "sidebar",
+        "belowName",
+        "sidebarTeamBlack",
+        "sidebarTeamDarkBlue",
+        "sidebarTeamDarkGreen",
+        "sidebarTeamDarkAqua",
+        "sidebarTeamDarkRed",
+        "sidebarTeamDarkPurple",
+        "sidebarTeamGold",
+        "sidebarTeamGray",
+        "sidebarTeamDarkGray",
+        "sidebarTeamBlue",
+        "sidebarTeamGreen",
+        "sidebarTeamAqua",
+        "sidebarTeamRed",
+        "sidebarTeamLightPurple",
+        "sidebarTeamYellow",
+        "sidebarTeamWhite"
+    ] as const;
 
     constructor(p: {
         bot: Protocol;

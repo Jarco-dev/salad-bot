@@ -123,4 +123,60 @@ export interface JavaPackets {
               action: 1;
           }
     );
+    teams: {
+        team: string;
+    } & (
+        | {
+              /**
+               * 0: create team
+               * 2: update team info
+               */
+              mode: 2;
+              name: string;
+              friendlyFire: 0 | 1;
+              nameTagVisibility:
+                  | "always"
+                  | "hideForOtherTeams"
+                  | "hideForOwnTeam"
+                  | "never";
+              collisionRule:
+                  | "always"
+                  | "pushOtherTeams"
+                  | "pushOwnTeam"
+                  | "never";
+              formatting: number;
+              prefix: string;
+              suffix: string;
+          }
+        | {
+              /**
+               * 1: remove team
+               */
+              mode: 1;
+          }
+        | {
+              /**
+               * 0: create team
+               * 3: add entities to team
+               * 4: remove entities from team
+               */
+              mode: 0 | 3 | 4;
+              name: string;
+              friendlyFire: 0 | 1;
+              nameTagVisibility:
+                  | "always"
+                  | "hideForOtherTeams"
+                  | "hideForOwnTeam"
+                  | "never";
+              collisionRule:
+                  | "always"
+                  | "pushOtherTeams"
+                  | "pushOwnTeam"
+                  | "never";
+              formatting: number;
+              prefix: string;
+              suffix: string;
+              players: string[];
+          }
+    );
 }

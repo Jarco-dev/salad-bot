@@ -137,7 +137,7 @@ export class BedrockProtocol extends Protocol {
                                 this.timeouts.respawn = setTimeout(() => {
                                     delete this.timeouts.respawn;
                                     this.respawn();
-                                }, 1000);
+                                }, 1000 + Math.floor(Math.random() * 1000));
                             } else if (this.isAlive && this.timeouts.respawn) {
                                 clearTimeout(this.timeouts.respawn);
                                 delete this.timeouts.respawn;

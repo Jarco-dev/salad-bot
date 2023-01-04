@@ -1,10 +1,11 @@
 import minecraft from "minecraft-protocol";
+import net from "net";
+import dns from "dns";
 import { SocksClient as socks } from "socks";
 import { JavaPackets, ProtocolOptions } from "@/types";
 import { Protocol } from "@/structures";
 import { Scoreboard } from "../internalClasses/Scoreboard";
-import net from "net";
-import dns from "dns";
+import { Team } from "../internalClasses/Team";
 
 /**
  * Confirmed support for
@@ -12,6 +13,8 @@ import dns from "dns";
  */
 export class JavaProtocol extends Protocol {
     private readonly bot: minecraft.Client;
+    private teams: { [key: string]: Team };
+    private teamsMap: { [key: string]: Team };
     public server:
         | {
               host: string;
@@ -21,20 +24,22 @@ export class JavaProtocol extends Protocol {
 
     constructor(p: ProtocolOptions<"java">) {
         super(p);
+        this.teams = {};
+        this.teamsMap = {};
 
         // Info log
         if (!this.options.hideInfoLogs) {
             this.client.logger.verbose(`${this.logPrefix} initializing`);
         }
 
-        // Get server host and port
-        const server = this.getServer();
+        // Get server host and port & proxy host and port
+        this.getServer();
         const proxy = this.getProxy();
 
         // Connect to server
         this.bot = minecraft.createClient({
-            host: server.host,
-            port: server.port,
+            host: this.server?.host,
+            port: this.server?.port,
             version: this.options.version,
             auth: "microsoft",
             username: this.options.username,
@@ -50,8 +55,8 @@ export class JavaProtocol extends Protocol {
                             type: 5
                         },
                         destination: {
-                            host: server.host,
-                            port: server.port
+                            host: this.server?.host ?? "host_did_not_resolve",
+                            port: this.server?.port ?? 25565
                         }
                     },
                     (err, info) => {
@@ -80,6 +85,7 @@ export class JavaProtocol extends Protocol {
         this.initSettings();
         this.initHealthSystem();
         this.initScoreboardSystem();
+        this.initTeamSystem();
     }
 
     /** Handles passing on events */
@@ -163,7 +169,7 @@ export class JavaProtocol extends Protocol {
                 this.timeouts.respawn = setTimeout(() => {
                     delete this.timeouts.respawn;
                     this.respawn();
-                }, 1000);
+                }, 1000 + Math.floor(Math.random() * 1000));
             }
         });
     }
@@ -254,7 +260,11 @@ export class JavaProtocol extends Protocol {
 
                     const result = scoreboard.setScore(
                         packet.itemName,
-                        this.chatMessage.fromNotch(packet.itemName),
+                        this.teamsMap[packet.itemName]
+                            ? this.teamsMap[packet.itemName].displayName(
+                                  packet.itemName
+                              )
+                            : this.chatMessage.fromNotch(packet.itemName),
                         packet.value
                     );
 
@@ -299,7 +309,72 @@ export class JavaProtocol extends Protocol {
         );
     }
 
-    private getServer(): { host: string; port: number } {
+    /** Handles teams */
+    private initTeamSystem() {
+        this.bot.on("teams", (packet: JavaPackets["teams"]) => {
+            const team = this.teams[packet.team];
+
+            // create team
+            if (packet.mode === 0) {
+                // Parse data
+                const data: Omit<typeof packet, "mode" | "players"> & {
+                    mode?: 0 | 1 | 2 | 3 | 4;
+                    players?: string[];
+                } = { ...packet };
+                delete data.mode;
+                delete data.players;
+
+                // Create team
+                const team = new Team({
+                    bot: this,
+                    ...(packet as Omit<typeof packet, "mode" | "players">)
+                });
+                packet.players.forEach(player => {
+                    team.addMember(player);
+                    this.teamsMap[player] = team;
+                });
+                this.teams[packet.team] = team;
+            }
+
+            // remove team
+            else if (packet.mode === 1) {
+                team.members.forEach(member => {
+                    delete this.teamsMap[member];
+                });
+                delete this.teams[packet.team];
+            }
+
+            // update team info
+            else if (packet.mode === 2) {
+                // parse data
+                const data: Omit<typeof packet, "mode"> & {
+                    mode?: 0 | 1 | 2 | 3 | 4;
+                } = { ...packet };
+                delete data.mode;
+
+                // Update team
+                team.update(packet as Omit<typeof packet, "mode" | "players">);
+            }
+
+            // add entities to team
+            else if (packet.mode === 3) {
+                packet.players.forEach(player => {
+                    team.addMember(player);
+                    this.teamsMap[player] = team;
+                });
+            }
+
+            // remove entities from team
+            else if (packet.mode === 4) {
+                packet.players.forEach(player => {
+                    team.removeMember(player);
+                    delete this.teamsMap[player];
+                });
+            }
+        });
+    }
+
+    private getServer() {
         let host: string;
         let port: number | undefined;
         switch (this.options.server) {
@@ -307,9 +382,13 @@ export class JavaProtocol extends Protocol {
                 host = "mc.vortexnetwork.net";
                 break;
             default:
-                throw new Error(
-                    `Server address info for ${this.options.server} not found`
+                this.emit(
+                    "error",
+                    new Error(
+                        `Server address info for ${this.options.server} not found`
+                    )
                 );
+                return;
         }
 
         // Set default port
@@ -317,22 +396,23 @@ export class JavaProtocol extends Protocol {
 
         // Host is already an ip or localhost & and we're using the default port
         if (net.isIPv4(host) && port === 25565 && host !== "localhost") {
-            return { host, port };
+            this.server = { host, port };
+            return;
         }
 
         // Resolve dns records
         dns.resolveSrv(`_minecraft._tcp.${host}`, (err, addresses) => {
             if (!err && addresses && addresses.length > 0) {
-                return {
+                this.server = {
                     host: addresses[0].name,
                     port: addresses[0].port
                 };
+                return;
             }
-            return;
         });
 
         // Return option values as the dns record(s) couldn't be resolved or don't exist
-        return { host, port };
+        this.server = { host, port };
     }
 
     public chat(message: string): void {
