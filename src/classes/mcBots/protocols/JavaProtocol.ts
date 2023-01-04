@@ -90,7 +90,7 @@ export class JavaProtocol extends Protocol {
 
     /** Handles passing on events */
     private initEventPassOn() {
-        this.bot.on("login", async () => {
+        this.bot.once("login", async () => {
             this.emit("ready");
         });
 

@@ -38,7 +38,7 @@ export class BedrockProtocol extends Protocol {
 
     /** Handles passing on events */
     private initEventPassOn() {
-        this.bot.on("spawn", () => {
+        this.bot.once("spawn", () => {
             this.emit("ready");
         });
 
