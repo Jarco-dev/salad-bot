@@ -5,8 +5,12 @@ import {
     ChatInputCommand,
     UserContextMenuCommand,
     Modal,
-    SelectMenuComponent,
-    MessageContextMenuCommand
+    MessageContextMenuCommand,
+    ChannelSelectMenuComponent,
+    MentionableSelectMenuComponent,
+    RoleSelectMenuComponent,
+    StringSelectMenuComponent,
+    UserSelectMenuComponent
 } from "@/structures";
 import { Client } from "@/classes";
 import { ApplicationCommandData, ButtonStyle, Interaction } from "discord.js";
@@ -16,7 +20,13 @@ interface GroupedHandlers {
     chatInputCommands: { [key: string]: ChatInputCommand };
     messageContextMenuCommands: { [key: string]: MessageContextMenuCommand };
     modals: { [key: string]: Modal };
-    selectMenuComponents: { [key: string]: SelectMenuComponent };
+    stringSelectMenuComponents: { [key: string]: StringSelectMenuComponent };
+    channelSelectMenuComponents: { [key: string]: ChannelSelectMenuComponent };
+    roleSelectMenuComponents: { [key: string]: RoleSelectMenuComponent };
+    mentionableSelectMenuComponents: {
+        [key: string]: MentionableSelectMenuComponent;
+    };
+    userSelectMenuComponents: { [key: string]: UserSelectMenuComponent };
     userContextMenuCommands: { [key: string]: UserContextMenuCommand };
 }
 
@@ -40,8 +50,12 @@ export class InteractionLoader {
             chatInputCommands: {},
             messageContextMenuCommands: {},
             modals: {},
-            selectMenuComponents: {},
-            userContextMenuCommands: {}
+            stringSelectMenuComponents: {},
+            userContextMenuCommands: {},
+            channelSelectMenuComponents: {},
+            mentionableSelectMenuComponents: {},
+            roleSelectMenuComponents: {},
+            userSelectMenuComponents: {}
         };
 
         this.handlersTypeConfig = [
@@ -89,15 +103,63 @@ export class InteractionLoader {
                 }
             },
             {
-                name: "selectMenuComponents",
+                name: "stringSelectMenuComponents",
                 folderDir: path.join(
                     __dirname,
                     "..",
                     "interactions",
-                    "selectMenuComponents"
+                    "stringSelectMenuComponents"
                 ),
                 validateHandler: handler => {
-                    return handler instanceof SelectMenuComponent;
+                    return handler instanceof StringSelectMenuComponent;
+                }
+            },
+            {
+                name: "userSelectMenuComponents",
+                folderDir: path.join(
+                    __dirname,
+                    "..",
+                    "interactions",
+                    "userSelectMenuComponents"
+                ),
+                validateHandler: handler => {
+                    return handler instanceof UserSelectMenuComponent;
+                }
+            },
+            {
+                name: "roleSelectMenuComponents",
+                folderDir: path.join(
+                    __dirname,
+                    "..",
+                    "interactions",
+                    "roleSelectMenuComponents"
+                ),
+                validateHandler: handler => {
+                    return handler instanceof RoleSelectMenuComponent;
+                }
+            },
+            {
+                name: "mentionableSelectMenuComponents",
+                folderDir: path.join(
+                    __dirname,
+                    "..",
+                    "interactions",
+                    "mentionableSelectMenuComponents"
+                ),
+                validateHandler: handler => {
+                    return handler instanceof MentionableSelectMenuComponent;
+                }
+            },
+            {
+                name: "channelSelectMenuComponents",
+                folderDir: path.join(
+                    __dirname,
+                    "..",
+                    "interactions",
+                    "channelSelectMenuComponents"
+                ),
+                validateHandler: handler => {
+                    return handler instanceof ChannelSelectMenuComponent;
                 }
             },
             {
@@ -213,8 +275,18 @@ export class InteractionLoader {
             ];
         } else if (i.isModalSubmit()) {
             return this.groupedHandlers.modals[i.customId];
-        } else if (i.isSelectMenu()) {
-            return this.groupedHandlers.selectMenuComponents[i.customId];
+        } else if (i.isStringSelectMenu()) {
+            return this.groupedHandlers.stringSelectMenuComponents[i.customId];
+        } else if (i.isUserSelectMenu()) {
+            return this.groupedHandlers.userSelectMenuComponents[i.customId];
+        } else if (i.isRoleSelectMenu()) {
+            return this.groupedHandlers.roleSelectMenuComponents[i.customId];
+        } else if (i.isMentionableSelectMenu()) {
+            return this.groupedHandlers.mentionableSelectMenuComponents[
+                i.customId
+            ];
+        } else if (i.isChannelSelectMenu()) {
+            return this.groupedHandlers.channelSelectMenuComponents[i.customId];
         } else if (i.isUserContextMenuCommand()) {
             return this.groupedHandlers.userContextMenuCommands[i.commandName];
         } else {
@@ -243,7 +315,7 @@ export class InteractionLoader {
     }
 
     public async updateApplicationCommands(): Promise<void> {
-        // BedrockProtocol is ready
+        // Client is ready
         await this.client.application?.fetch();
         if (!this.client.isReady() || !this.client.application) {
             this.client.logger.warn(

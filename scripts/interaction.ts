@@ -32,10 +32,30 @@ const interactionTypes = {
         builder: "ModalBuilder",
         event: "ModalSubmitInteraction"
     },
-    SelectMenuComponent: {
-        folder: "selectMenuComponents",
-        builder: "SelectMenuBuilder",
-        event: "SelectMenuInteraction"
+    StringSelectMenuComponent: {
+        folder: "stringSelectMenuComponents",
+        builder: "StringSelectMenuBuilder",
+        event: "StringSelectMenuInteraction"
+    },
+    UserSelectMenuComponent: {
+        folder: "userSelectMenuComponents",
+        builder: "UserSelectMenuBuilder",
+        event: "UserSelectMenuInteraction"
+    },
+    RoleSelectMenuComponent: {
+        folder: "roleSelectMenuComponents",
+        builder: "RoleSelectMenuBuilder",
+        event: "RoleSelectMenuInteraction"
+    },
+    MentionableSelectMenuComponent: {
+        folder: "mentionableSelectMenuComponents",
+        builder: "MentionableSelectMenuBuilder",
+        event: "MentionableSelectMenuInteraction"
+    },
+    ChannelSelectMenuComponent: {
+        folder: "channelSelectMenuComponents",
+        builder: "ChannelSelectMenuBuilder",
+        event: "ChannelSelectMenuInteraction"
     },
     UserContextMenuCommand: {
         folder: "userContextMenuCommands",

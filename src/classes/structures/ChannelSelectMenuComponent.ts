@@ -1,14 +1,17 @@
 import Client from "../../index";
 import { HandlerResult } from "@/types";
-import { SelectMenuBuilder, SelectMenuInteraction } from "discord.js";
+import {
+    ChannelSelectMenuBuilder,
+    ChannelSelectMenuInteraction
+} from "discord.js";
 
-export abstract class SelectMenuComponent {
+export abstract class ChannelSelectMenuComponent {
     protected readonly client = Client;
-    public readonly data: ReturnType<SelectMenuBuilder["toJSON"]>;
+    public readonly data: ReturnType<ChannelSelectMenuBuilder["toJSON"]>;
     public readonly enabled: boolean;
 
     protected constructor(p: {
-        builder: Pick<SelectMenuBuilder, "toJSON">;
+        builder: Pick<ChannelSelectMenuBuilder, "toJSON">;
         enabled?: boolean;
     }) {
         this.data = p.builder.toJSON();
@@ -16,6 +19,6 @@ export abstract class SelectMenuComponent {
     }
 
     public abstract run(
-        i: SelectMenuInteraction
+        i: ChannelSelectMenuInteraction
     ): HandlerResult | Promise<HandlerResult>;
 }

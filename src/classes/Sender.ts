@@ -5,12 +5,16 @@ import {
     InteractionResponse,
     InteractionUpdateOptions,
     MessageComponentInteraction,
-    SelectMenuInteraction,
     Snowflake,
     TextBasedChannel,
     User,
     MessageCreateOptions,
-    ModalSubmitInteraction
+    ModalSubmitInteraction,
+    StringSelectMenuInteraction,
+    ChannelSelectMenuInteraction,
+    UserSelectMenuInteraction,
+    RoleSelectMenuInteraction,
+    MentionableSelectMenuInteraction
 } from "discord.js";
 import { Client } from "./";
 import { SenderMessageOptions, SenderReplyOptions } from "@/types";
@@ -26,7 +30,11 @@ export class Sender {
     public async reply(
         i:
             | ButtonInteraction
-            | SelectMenuInteraction
+            | StringSelectMenuInteraction
+            | UserSelectMenuInteraction
+            | RoleSelectMenuInteraction
+            | MentionableSelectMenuInteraction
+            | ChannelSelectMenuInteraction
             | MessageComponentInteraction
             | ModalSubmitInteraction,
         payload: InteractionUpdateOptions & { fetchReply: true },
@@ -36,7 +44,11 @@ export class Sender {
         i:
             | CommandInteraction
             | ButtonInteraction
-            | SelectMenuInteraction
+            | StringSelectMenuInteraction
+            | UserSelectMenuInteraction
+            | RoleSelectMenuInteraction
+            | MentionableSelectMenuInteraction
+            | ChannelSelectMenuInteraction
             | MessageComponentInteraction
             | ModalSubmitInteraction,
         payload: InteractionReplyOptions & { fetchReply: true },
@@ -46,7 +58,11 @@ export class Sender {
     public async reply(
         i:
             | ButtonInteraction
-            | SelectMenuInteraction
+            | StringSelectMenuInteraction
+            | UserSelectMenuInteraction
+            | RoleSelectMenuInteraction
+            | MentionableSelectMenuInteraction
+            | ChannelSelectMenuInteraction
             | MessageComponentInteraction
             | ModalSubmitInteraction,
         payload: InteractionUpdateOptions,
@@ -56,7 +72,11 @@ export class Sender {
         i:
             | CommandInteraction
             | ButtonInteraction
-            | SelectMenuInteraction
+            | StringSelectMenuInteraction
+            | UserSelectMenuInteraction
+            | RoleSelectMenuInteraction
+            | MentionableSelectMenuInteraction
+            | ChannelSelectMenuInteraction
             | MessageComponentInteraction
             | ModalSubmitInteraction,
         payload: InteractionReplyOptions,
@@ -67,7 +87,11 @@ export class Sender {
         i:
             | CommandInteraction
             | ButtonInteraction
-            | SelectMenuInteraction
+            | StringSelectMenuInteraction
+            | UserSelectMenuInteraction
+            | RoleSelectMenuInteraction
+            | MentionableSelectMenuInteraction
+            | ChannelSelectMenuInteraction
             | MessageComponentInteraction
             | ModalSubmitInteraction,
         payload: InteractionReplyOptions & { fetchReply: true },
@@ -77,7 +101,11 @@ export class Sender {
         i:
             | CommandInteraction
             | ButtonInteraction
-            | SelectMenuInteraction
+            | StringSelectMenuInteraction
+            | UserSelectMenuInteraction
+            | RoleSelectMenuInteraction
+            | MentionableSelectMenuInteraction
+            | ChannelSelectMenuInteraction
             | MessageComponentInteraction
             | ModalSubmitInteraction,
         payload: InteractionReplyOptions,
@@ -87,7 +115,11 @@ export class Sender {
         i:
             | CommandInteraction
             | ButtonInteraction
-            | SelectMenuInteraction
+            | StringSelectMenuInteraction
+            | UserSelectMenuInteraction
+            | RoleSelectMenuInteraction
+            | MentionableSelectMenuInteraction
+            | ChannelSelectMenuInteraction
             | MessageComponentInteraction
             | ModalSubmitInteraction,
         payload: InteractionUpdateOptions | InteractionReplyOptions,
@@ -147,7 +179,11 @@ export class Sender {
         origin:
             | CommandInteraction
             | ButtonInteraction
-            | SelectMenuInteraction
+            | StringSelectMenuInteraction
+            | UserSelectMenuInteraction
+            | RoleSelectMenuInteraction
+            | MentionableSelectMenuInteraction
+            | ChannelSelectMenuInteraction
             | MessageComponentInteraction
             | ModalSubmitInteraction
             | Message,
