@@ -1,6 +1,6 @@
 {
     "name": "salad-bot",
-    "version": "1.3.0",
+    "version": "2.0.0",
     "description": "The discord bot for the salad server",
     "main": "dist/index.js",
     "engines": {
