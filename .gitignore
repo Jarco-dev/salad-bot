@@ -1,10 +1,10 @@
-
 # Created by https://www.toptal.com/developers/gitignore/api/node,webstorm+all
 # Edit at https://www.toptal.com/developers/gitignore?templates=node,webstorm+all
 
-### Repo specific ###
-secret/*.js
-cache
+# Project specific
+storage
+proxies.json
+bedrockProxy/relays.json
 
 ### Node ###
 # Logs
@@ -196,7 +196,7 @@ crashlytics.properties
 crashlytics-build.properties
 fabric.properties
 
-# Editor-based Rest Client
+# Editor-based Rest BedrockProtocol
 .idea/httpRequests
 
 # Android studio 3.1+ serialized cache file

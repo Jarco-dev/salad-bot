@@ -1,0 +1,80 @@
+{
+    "java": {
+        "jarcokers2": {
+            "host": "",
+            "port":
+        },
+        "spankmypickle": {
+            "host": "",
+            "port":
+        },
+        "notreadyforlife": {
+            "host": "",
+            "port":
+        },
+        "chokeonmypickle": {
+            "host": "",
+            "port":
+        },
+        "jorengamer4": {
+            "host": "",
+            "port":
+        },
+        "n0rmie": {
+            "host": "",
+            "port":
+        },
+        "demonsht": {
+            "host": "",
+            "port":
+        },
+        "stanloonaowo": {
+            "host": "",
+            "port":
+        },
+        "tayswiftlover420": {
+            "host": "",
+            "port":
+        }
+    },
+    "bedrock": {
+        "vortex": {
+            "*jarcokers2": {
+                "host": "",
+                "port":
+            },
+            "*jarcoalt1": {
+                "host": "",
+                "port":
+            },
+            "*jarcoalt2": {
+                "host": "",
+                "port":
+            },
+            "*jarcoalt3": {
+                "host": "",
+                "port":
+            },
+            "*jorengamer4": {
+                "host": "",
+                "port":
+            },
+            "*joren4537": {
+                "host": "",
+                "port":
+            },
+            "*joren4133": {
+                "host": "",
+                "port":
+            },
+            "*joren5801": {
+                "host": "",
+                "port":
+            },
+            "*joren2999": {
+                "host": "",
+                "port":
+            }
+        }
+    }
+}
