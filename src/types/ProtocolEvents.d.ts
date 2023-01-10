@@ -1,12 +1,14 @@
 import { ChatMessage } from "prismarine-chat";
 import { Scoreboard } from "../classes/mcBots/internalClasses/Scoreboard";
+import { MicrosoftDeviceAuthorizationResponse } from "minecraft-protocol";
 
 export type ProtocolEvents = {
     ready: () => void;
     loginFailure: (msg: ChatMessage) => void;
     kick: (msg: ChatMessage) => void;
     end: (reason?: string) => void;
-    error: (error: any) => void;
+    error: (error: Error) => void;
+    msaCode: (data: MicrosoftDeviceAuthorizationResponse) => void;
     chat: (msg: ChatMessage) => void;
     scoreboardCreate: (scoreboard: Scoreboard) => void;
     scoreboardDelete: (scoreboard: Scoreboard) => void;

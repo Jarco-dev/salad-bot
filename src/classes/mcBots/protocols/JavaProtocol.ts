@@ -13,8 +13,8 @@ import { Team } from "../internalClasses/Team";
  */
 export class JavaProtocol extends Protocol {
     private readonly bot: minecraft.Client;
-    private teams: { [key: string]: Team };
-    private teamsMap: { [key: string]: Team };
+    private readonly teams: { [key: string]: Team };
+    private readonly teamsMap: { [key: string]: Team };
     public server:
         | {
               host: string;
@@ -61,22 +61,37 @@ export class JavaProtocol extends Protocol {
                     },
                     (err, info) => {
                         if (err) {
+                            this.emit(
+                                "loginFailure",
+                                this.chatMessage.fromNotch(
+                                    "unable to connect to proxy"
+                                )
+                            );
                             this.client.logger.error(
                                 "Error while connecting to proxy",
                                 err
                             );
                             return;
                         } else if (!info?.socket) {
+                            this.emit(
+                                "loginFailure",
+                                this.chatMessage.fromNotch(
+                                    "proxy didn't connect correctly"
+                                )
+                            );
                             this.client.logger.warn(
                                 "Socket does not exist while it was expected"
                             );
                             return;
                         }
 
-                        bot.setSocket(info?.socket);
+                        bot.setSocket(info!.socket);
                         bot.emit("connect");
                     }
                 );
+            },
+            onMsaCode: data => {
+                this.emit("msaCode", data);
             }
         });
 
@@ -131,25 +146,23 @@ export class JavaProtocol extends Protocol {
     /** Handles sending settings */
     private initSettings() {
         this.once("ready", () => {
-            setTimeout(() => {
-                this.bot.write("settings", {
-                    locale: "en_US",
-                    viewDistance: this.options.viewDistance ?? 0,
-                    chatFlags: 0,
-                    chatColors: true,
-                    skinParts:
-                        (1 << 0) |
-                        (1 << 1) |
-                        (1 << 2) |
-                        (1 << 3) |
-                        (1 << 4) |
-                        (1 << 5) |
-                        (1 << 6),
-                    mainHand: 1,
-                    enableTextFiltering: false,
-                    enableServerListing: true
-                });
-            }, 15000);
+            this.bot.write("settings", {
+                locale: "en_US",
+                viewDistance: this.options.viewDistance ?? 0,
+                chatFlags: 0,
+                chatColors: true,
+                skinParts:
+                    (1 << 0) |
+                    (1 << 1) |
+                    (1 << 2) |
+                    (1 << 3) |
+                    (1 << 4) |
+                    (1 << 5) |
+                    (1 << 6),
+                mainHand: 1,
+                enableTextFiltering: false,
+                enableServerListing: true
+            });
         });
     }
 
@@ -428,5 +441,9 @@ export class JavaProtocol extends Protocol {
         }
 
         this.bot.write("client_command", { payload: 0 });
+    }
+
+    public end() {
+        this.bot.end();
     }
 }

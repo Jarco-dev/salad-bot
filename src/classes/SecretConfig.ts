@@ -1,6 +1,8 @@
 import "dotenv/config";
 import { LogLevel } from "@/types";
 import { Logger } from "./Logger";
+import { Snowflake } from "discord.js";
+import * as process from "process";
 
 export class SecretConfig {
     public DISCORD_BOT_TOKEN = process.env.DISCORD_BOT_TOKEN as string;
@@ -9,6 +11,10 @@ export class SecretConfig {
     //     | string
     //     | undefined;
     public LOG_LEVEL = process.env.LOG_LEVEL as LogLevel;
+    public MC_BOT_MANAGERS = process.env.MC_BOT_MANAGERS?.split(
+        ","
+    ) as Snowflake[];
+    public MC_BOT_ALERTS = process.env.MC_BOT_ALERTS as string;
 
     constructor() {}
 
@@ -31,6 +37,14 @@ export class SecretConfig {
             )
         ) {
             errors.push("LOG_LEVEL is a invalid value");
+        }
+
+        if (!this.MC_BOT_MANAGERS) {
+            errors.push("MC_BOT_MANAGERS is required but not given");
+        }
+
+        if (!this.MC_BOT_ALERTS) {
+            errors.push("MC_BOT_ALERTS is required but not given");
         }
 
         if (errors.length > 0) {

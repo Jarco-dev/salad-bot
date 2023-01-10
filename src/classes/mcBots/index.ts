@@ -1,1 +1,1 @@
-export { VotePartyBot } from "./VotePartyBot";
+export { AfkBot } from "./AfkBot";

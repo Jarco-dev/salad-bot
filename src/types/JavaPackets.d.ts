@@ -6,7 +6,7 @@ export interface JavaPackets {
         reason: string;
     };
     respawn: {
-        dimension: { [key: string]: any }; // TODO: Add nbt type / parser?
+        dimension: { [key: string]: any };
         worldName: string;
         hashedSeed: bigint;
         /**

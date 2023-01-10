@@ -29,11 +29,11 @@ if (errors.length > 0) {
 for (const relayOptions of require("./relays.json")) {
     const relay = new bedrock.Relay({
         ...relayOptions,
-        host: "127.0.0.1"
+        host: "0.0.0.0"
     });
     relay.listen();
     console.log(
-        `Relay started: 127.0.0.1:${relayOptions.port} -> ${relayOptions.destination.host}:${relayOptions.destination.port}`
+        `Relay started: 0.0.0.0:${relayOptions.port} -> ${relayOptions.destination.host}:${relayOptions.destination.port}`
     );
 
     relay.on("error", err => {

@@ -2,13 +2,19 @@ import { Client } from "@/classes";
 import {
     ActionRow,
     ButtonInteraction,
+    ChannelSelectMenuBuilder,
     CommandInteraction,
     GuildChannel,
+    MentionableSelectMenuBuilder,
     MessageActionRowComponent,
+    MessageActionRowComponentBuilder,
     PermissionResolvable,
     Role,
+    RoleSelectMenuBuilder,
     SelectMenuInteraction,
-    TextBasedChannel
+    StringSelectMenuBuilder,
+    TextBasedChannel,
+    UserSelectMenuBuilder
 } from "discord.js";
 import {
     ActionRowBuilder,
@@ -16,8 +22,7 @@ import {
     ChannelType,
     ComponentType,
     EmbedBuilder,
-    PermissionsBitField,
-    SelectMenuBuilder
+    PermissionsBitField
 } from "discord.js";
 
 export class Utilities {
@@ -208,27 +213,42 @@ export class Utilities {
 
     public getMessageActionRowBuilder(
         actionRow: ActionRow<MessageActionRowComponent>
-    ): ActionRowBuilder<ButtonBuilder | SelectMenuBuilder> {
+    ): ActionRowBuilder<MessageActionRowComponentBuilder> {
         const components = actionRow
             .toJSON()
             .components.reduce(
-                (a: (ButtonBuilder | SelectMenuBuilder)[], component) => {
-                    const builder: ButtonBuilder | SelectMenuBuilder =
-                        component.type === ComponentType.Button
-                            ? ButtonBuilder.from(component)
-                            : SelectMenuBuilder.from(component);
+                (a: MessageActionRowComponentBuilder[], component) => {
+                    let builder: MessageActionRowComponentBuilder;
+
+                    switch (component.type) {
+                        case ComponentType.Button:
+                            builder = ButtonBuilder.from(component);
+                            break;
+                        case ComponentType.StringSelect:
+                            builder = StringSelectMenuBuilder.from(component);
+                            break;
+                        case ComponentType.UserSelect:
+                            builder = UserSelectMenuBuilder.from(component);
+                            break;
+                        case ComponentType.RoleSelect:
+                            builder = RoleSelectMenuBuilder.from(component);
+                            break;
+                        case ComponentType.MentionableSelect:
+                            builder =
+                                MentionableSelectMenuBuilder.from(component);
+                            break;
+                        case ComponentType.ChannelSelect:
+                            builder = ChannelSelectMenuBuilder.from(component);
+                            break;
+                    }
                     a.push(builder);
                     return a;
                 },
                 []
             );
 
-        return components[0].data.type === ComponentType.Button
-            ? new ActionRowBuilder<ButtonBuilder>().addComponents(
-                  components as ButtonBuilder[]
-              )
-            : new ActionRowBuilder<SelectMenuBuilder>().addComponents(
-                  components as SelectMenuBuilder[]
-              );
+        return new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents(
+            components
+        );
     }
 }

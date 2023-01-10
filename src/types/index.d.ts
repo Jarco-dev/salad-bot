@@ -9,7 +9,6 @@ export { McUsernames } from "./McUsernames";
 export { JavaPackets } from "./JavaPackets";
 export { ProtocolEvents } from "./ProtocolEvents";
 export { ProtocolOptions } from "./ProtocolOptions";
-export { SecretConfig } from "./SecretConfig";
 export { SenderMessageOptions } from "./SenderMessageOptions";
 export { SenderMessageType } from "./SenderMessageType";
 export { SenderReplyMethod } from "./SenderReplyMethod";

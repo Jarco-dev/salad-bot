@@ -33,7 +33,7 @@ if (errors.length > 0) {
 const server = socks5.createServer({
     port: PORT,
     onAccept: (socket, info, accept) => {
-        if (!IP_WHITELIST.includes(info.srcAddr)) {
+        if (IP_WHITELIST.filter(ip => info.srcAddr.includes(ip)).length === 0) {
             console.log(`Ignoring connection from: ${info.srcAddr}`);
             return;
         }

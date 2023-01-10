@@ -7,7 +7,8 @@ import {
     InteractionLoader,
     EventLoader,
     TaskLoader,
-    ProxiesConfig
+    ProxiesConfig,
+    McBotsManager
 } from "@/classes";
 // import { PrismaClient } from "@prisma/client";
 import { Client as DiscordClient } from "discord.js";
@@ -23,6 +24,7 @@ export class Client extends DiscordClient {
     public interactionLoader = new InteractionLoader(this);
     public eventLoader = new EventLoader(this);
     public taskLoader = new TaskLoader(this);
+    public mcBots = new McBotsManager(this);
 
     constructor() {
         super(config.CLIENT_OPTIONS);

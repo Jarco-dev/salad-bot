@@ -21,3 +21,12 @@ process.on("unhandledRejection", err => {
         err
     );
 });
+
+// Stop all bots when shutting down
+process.on("SIGINT", () => {
+    client.mcBots.bots.forEach(bot => {
+        bot.end();
+    });
+    // eslint-disable-next-line no-process-exit
+    process.exit(0);
+});

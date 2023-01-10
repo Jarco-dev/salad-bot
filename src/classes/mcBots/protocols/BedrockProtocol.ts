@@ -2,6 +2,7 @@ import bedrock from "bedrock-protocol";
 import { BedrockPackets, ProtocolOptions } from "@/types";
 import { Protocol } from "@/structures";
 import { Scoreboard } from "../internalClasses/Scoreboard";
+import { MicrosoftDeviceAuthorizationResponse } from "minecraft-protocol";
 
 /**
  * Confirmed support for
@@ -26,7 +27,10 @@ export class BedrockProtocol extends Protocol {
             version: this.options.version,
             username: this.options.username,
             profilesFolder: this.client.config.BOT_CACHE_FOLDER_PATH,
-            conLog: null
+            conLog: null,
+            onMsaCode: (data: MicrosoftDeviceAuthorizationResponse) => {
+                this.emit("msaCode", data);
+            }
         } as unknown as bedrock.ClientOptions); // TODO: Remove forced type
 
         this.initLogSystem();
@@ -283,5 +287,9 @@ export class BedrockProtocol extends Protocol {
             state: 2,
             runtime_entity_id: this.bot.entityId
         });
+    }
+
+    public end() {
+        this.bot.disconnect();
     }
 }

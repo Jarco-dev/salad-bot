@@ -4,7 +4,7 @@
 # Project specific
 storage
 proxies.json
-relayServer/relays.json
+bedrockProxy/relays.json
 
 ### Node ###
 # Logs

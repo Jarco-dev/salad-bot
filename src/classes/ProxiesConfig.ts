@@ -68,8 +68,8 @@ export class ProxiesConfig {
         if (!this.bedrock) {
             errors.push("bedrock is required but not given");
         } else {
-            const servers: McServerNames["bedrock"][] = ["vortex"];
-            const usernames: McUsernames["bedrock"][] = [
+            const servers: McServerNames<"bedrock">[] = ["vortex"];
+            const usernames: McUsernames<"bedrock">[] = [
                 "*jarcokers2",
                 "*jarcoalt1",
                 "*jarcoalt2",
