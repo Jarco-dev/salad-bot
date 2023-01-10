@@ -1,0 +1,16 @@
+import { HandlerResult } from "@/types";
+import { {{type}} } from "@/structures";
+import { {{builder}}, {{event}}{{extraDjsImports}} } from "discord.js";
+
+export default class {{name}}{{type}} extends {{type}} {
+    constructor() {
+        super({
+            builder: new {{builder}}(){{builderDefaults}}
+        });
+    }
+
+    public run(i: {{event}}): HandlerResult | Promise<HandlerResult> {
+        // Success
+        return { result: 'SUCCESS' };
+    }
+}
