@@ -43,7 +43,7 @@ for (const relayOptions of require("./relays.json")) {
     relay.on("connect", player => {
         if (!IP_WHITELIST.includes(player.connection.address.split("/")[0])) {
             console.log(
-                `Denying connection: ${player.connection.address} -> ${relayOptions.destination.host}:${relayOptions.destination.port}`
+                `Ignoring connection: ${player.connection.address} -> ${relayOptions.destination.host}:${relayOptions.destination.port}`
             );
             player.close();
             return;

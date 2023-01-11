@@ -21,6 +21,7 @@ export type Events = {
     msaCode: (data: MicrosoftDeviceAuthorizationResponse) => void;
     error: (error: Error) => void;
     loginFailure: (msg: ChatMessage) => void;
+    kick: (msg: ChatMessage) => void;
 };
 
 export class AfkBot extends (EventEmitter as new () => TypedEmitter<Events>) {
@@ -94,6 +95,10 @@ export class AfkBot extends (EventEmitter as new () => TypedEmitter<Events>) {
             }
         });
 
+        this.bot.on("kick", msg => {
+            this.emit("kick", msg);
+        });
+
         this.bot.on("chat", msg => {
             if (
                 (this.type === "voteParty" &&
@@ -160,7 +165,7 @@ export class AfkBot extends (EventEmitter as new () => TypedEmitter<Events>) {
         this.emit("statusUpdate", old, this.status);
     }
 
-    public end() {
-        this.bot.end();
+    public end(safeEnd?: boolean) {
+        this.bot.end(safeEnd);
     }
 }

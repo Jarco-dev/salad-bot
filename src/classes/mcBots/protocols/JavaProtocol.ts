@@ -443,7 +443,8 @@ export class JavaProtocol extends Protocol {
         this.bot.write("client_command", { payload: 0 });
     }
 
-    public end() {
+    public end(safeEnd?: boolean) {
+        this.safeEnd = !!safeEnd;
         this.bot.end();
     }
 }
