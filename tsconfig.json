@@ -10,7 +10,6 @@
         "skipLibCheck": true,
         "sourceMap": false,
         "declaration": false,
-        "resolveJsonModule": true,
         "paths": {
             "@/interactions/*": ["./src/interactions/*"],
             "@/classes": ["./src/classes"],
@@ -19,7 +18,6 @@
         }
     },
     "include": [
-        "src/**/*",
-        "proxies.json"
+        "src/**/*"
     ]
 }
