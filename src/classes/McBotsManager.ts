@@ -177,7 +177,7 @@ export class McBotsManager {
                 };
 
                 let timestamp: number;
-                const reconnectDelay = 900000;
+                const reconnectDelay = 300000;
                 const getTimestamp = () => {
                     const now = Date.now();
                     if (!timestamp || now - timestamp > 100) {
