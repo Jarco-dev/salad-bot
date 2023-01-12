@@ -1,6 +1,7 @@
 import { Logger } from "./Logger";
 import { McServerNames, McUsernames } from "@/types";
-import proxies from "../../proxies.json";
+import path from "path";
+const proxies = require(path.join(process.cwd(), "proxies.json"));
 
 export class ProxiesConfig {
     public java = proxies.java as {

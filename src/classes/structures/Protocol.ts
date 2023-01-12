@@ -18,6 +18,7 @@ export abstract class Protocol extends (EventEmitter as new () => TypedEmitter<P
     public food: number;
     public foodSaturation: number;
     public scoreboards: { [key: string]: Scoreboard };
+    public safeEnd: boolean;
 
     protected constructor(p: ProtocolOptions<"java" | "bedrock">) {
         super();
@@ -32,6 +33,7 @@ export abstract class Protocol extends (EventEmitter as new () => TypedEmitter<P
         this.health = 0;
         this.food = 0;
         this.foodSaturation = 0;
+        this.safeEnd = false;
     }
 
     private getLogPrefix() {

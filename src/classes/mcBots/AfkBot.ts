@@ -5,6 +5,7 @@ import { Client } from "@/classes";
 import { EventEmitter } from "node:events";
 import { MicrosoftDeviceAuthorizationResponse } from "minecraft-protocol";
 import { ChatMessage } from "prismarine-chat";
+
 type Status =
     | ""
     | "joining"
@@ -21,84 +22,100 @@ export type Events = {
     msaCode: (data: MicrosoftDeviceAuthorizationResponse) => void;
     error: (error: Error) => void;
     loginFailure: (msg: ChatMessage) => void;
+    kick: (msg: ChatMessage) => void;
 };
 
 export class AfkBot extends (EventEmitter as new () => TypedEmitter<Events>) {
     public client: Client;
-    public bot: JavaProtocol | BedrockProtocol;
-    public server: { network: "vortex"; subServer: "plasma" | "cosmic" };
+    public bot?: JavaProtocol | BedrockProtocol;
     public status: Status = "";
-    public type: "voteParty" | "autoMiner";
-    public username: McUsernames<"java" | "bedrock">;
+    public options: {
+        type: "voteParty" | "autoMiner";
+        server: { network: "vortex"; subServer: "plasma" | "cosmic" };
+        username: ProtocolOptions<"java" | "bedrock">["username"];
+        protocol: ProtocolOptions<"java" | "bedrock">["protocol"];
+    };
+    public lastJoinTimestamp?: number;
 
     constructor(p: {
         client: Client;
-        type: typeof AfkBot.prototype["type"];
-        server: typeof AfkBot.prototype["server"];
+        type: "voteParty" | "autoMiner";
+        server: { network: "vortex"; subServer: "plasma" | "cosmic" };
         username: ProtocolOptions<"java">["username"];
         protocol: ProtocolOptions<"java">["protocol"];
     });
     constructor(p: {
         client: Client;
-        type: typeof AfkBot.prototype["type"];
-        server: typeof AfkBot.prototype["server"];
+        type: "voteParty" | "autoMiner";
+        server: { network: "vortex"; subServer: "plasma" | "cosmic" };
         username: ProtocolOptions<"bedrock">["username"];
         protocol: ProtocolOptions<"bedrock">["protocol"];
     });
     constructor(p: {
         client: Client;
-        type: typeof AfkBot.prototype["type"];
-        server: typeof AfkBot.prototype["server"];
+        type: "voteParty" | "autoMiner";
+        server: { network: "vortex"; subServer: "plasma" | "cosmic" };
         username: ProtocolOptions<"java" | "bedrock">["username"];
         protocol: ProtocolOptions<"java" | "bedrock">["protocol"];
     }) {
         super();
         this.client = p.client;
-        this.type = p.type;
-        this.server = p.server;
-        this.username = p.username;
+        this.options = p;
 
-        // Start the bot
+        this.initBotClient();
+    }
+
+    private initBotClient() {
+        this.lastJoinTimestamp = Date.now();
         this.setStatus("joining");
-        if (p.protocol === "java") {
+        if (this.options.protocol === "java") {
             this.bot = new JavaProtocol({
-                username: p.username as McUsernames<"java">,
-                protocol: p.protocol,
+                username: this.options.username as McUsernames<"java">,
+                protocol: this.options.protocol,
                 server: "vortex",
                 version: "1.17.1"
             });
         } else {
             this.bot = new BedrockProtocol({
-                username: p.username as McUsernames<"bedrock">,
-                protocol: p.protocol,
+                username: this.options.username as McUsernames<"bedrock">,
+                protocol: this.options.protocol,
                 server: "vortex",
                 version: "1.19.50"
             });
         }
-
         this.initListeners();
     }
 
     private initListeners() {
+        if (!this.bot) {
+            throw new Error("Can't add listeners to a un initialized bot");
+        }
+
         this.on("statusUpdate", (_, newStatus) => {
             switch (newStatus) {
                 case "inHub":
-                    this.bot.chat(`/${this.server.subServer}`);
+                    this.bot!.chat(`/${this.options.server.subServer}`);
                     break;
                 case "inPlasma":
                 case "inCosmic":
-                    this.bot.chat(
-                        this.type === "autoMiner" ? "/auto" : "/home afk"
+                    this.bot!.chat(
+                        this.options.type === "autoMiner"
+                            ? "/auto"
+                            : "/home afk"
                     );
                     break;
             }
         });
 
+        this.bot.on("kick", msg => {
+            this.emit("kick", msg);
+        });
+
         this.bot.on("chat", msg => {
             if (
-                (this.type === "voteParty" &&
+                (this.options.type === "voteParty" &&
                     msg.toString() === "Teleporting to afk.") ||
-                (this.type === "autoMiner" &&
+                (this.options.type === "autoMiner" &&
                     msg.toString() === "Warping to auto.")
             ) {
                 this.setStatus("ready");
@@ -136,7 +153,7 @@ export class AfkBot extends (EventEmitter as new () => TypedEmitter<Events>) {
                     if (
                         this.status === "inCosmic" ||
                         (this.status === "ready" &&
-                            this.server.subServer === "cosmic")
+                            this.options.server.subServer === "cosmic")
                     )
                         break;
                     this.setStatus("inCosmic");
@@ -145,7 +162,7 @@ export class AfkBot extends (EventEmitter as new () => TypedEmitter<Events>) {
                     if (
                         this.status === "inPlasma" ||
                         (this.status === "ready" &&
-                            this.server.subServer === "plasma")
+                            this.options.server.subServer === "plasma")
                     )
                         break;
                     this.setStatus("inPlasma");
@@ -160,7 +177,7 @@ export class AfkBot extends (EventEmitter as new () => TypedEmitter<Events>) {
         this.emit("statusUpdate", old, this.status);
     }
 
-    public end() {
-        this.bot.end();
+    public end(safeEnd?: boolean) {
+        if (this.bot) this.bot.end(safeEnd);
     }
 }

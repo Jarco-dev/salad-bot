@@ -1,6 +1,11 @@
 import { Client } from "./Client";
 import { AfkBot } from "./mcBots";
-import { Collection } from "discord.js";
+import {
+    ActionRowBuilder,
+    ButtonBuilder,
+    ButtonStyle,
+    Collection
+} from "discord.js";
 import { McUsernames, TypedEmitter } from "@/types";
 import { EventEmitter } from "node:events";
 
@@ -23,8 +28,6 @@ export class McBotsManager {
 
         setInterval(() => {
             if (this.queue.length >= 1) {
-                this.client.logger.debug("Queue", this.queue);
-                this.client.logger.debug("Cache", [...this.bots.keys()]);
                 this.eventEmitter.emit(
                     "runQueued",
                     this.queue.shift() as string
@@ -107,20 +110,134 @@ export class McBotsManager {
         const botCacheId = `${p.server.network}_${p.username}`;
         this.queue.push(botCacheId);
         return await new Promise<BotTypes>(res => {
-            const start = (id: string) => {
+            const start: Parameters<
+                typeof McBotsManager.prototype.eventEmitter.on<"runQueued">
+            >[1] = id => {
                 if (botCacheId !== id) return;
                 this.eventEmitter.removeListener("runQueued", start);
 
                 const bot = startFunction();
                 this.bots.set(botCacheId, bot);
+                let alerted = false;
+                let wasReady = false;
+                const alert = (
+                    title: string,
+                    field: { name: string; value: string }
+                ) => {
+                    if (!wasReady || alerted) {
+                        return;
+                    }
+                    alerted = true;
+                    const embed = this.client.utils
+                        .defaultEmbed()
+                        .setColor(this.client.config.MSG_TYPES.ERROR.COLOR)
+                        .setTitle(`${p.username} ${title}`)
+                        .setDescription(
+                            [
+                                `**Type:** ${
+                                    p.type.charAt(0).toUpperCase() +
+                                    p.type
+                                        .split(/(?=[A-Z])/)
+                                        .join(" ")
+                                        .toLowerCase()
+                                        .slice(1)
+                                }`,
+                                `**Server:** ${
+                                    p.server.network.charAt(0).toUpperCase() +
+                                    p.server.network.slice(1)
+                                } -> ${
+                                    p.server.subServer.charAt(0).toUpperCase() +
+                                    p.server.subServer.slice(1)
+                                }`
+                            ].join("\n")
+                        )
+                        .setFields(field);
+                    const buttons =
+                        new ActionRowBuilder<ButtonBuilder>().setComponents(
+                            new ButtonBuilder()
+                                .setStyle(ButtonStyle.Success)
+                                .setLabel("Resolve")
+                                .setCustomId("MC_BOTS_ALERT_RESOLVE"),
+                            new ButtonBuilder()
+                                .setStyle(ButtonStyle.Secondary)
+                                .setLabel("Ignore")
+                                .setCustomId("MC_BOTS_ALERT_IGNORE")
+                        );
+
+                    this.client.sender.msgChannel(
+                        this.client.sConfig.MC_BOT_ALERTS,
+                        {
+                            content: this.client.sConfig.MC_BOT_MANAGERS.map(
+                                userId => `<@${userId}>`
+                            ).join(" "),
+                            embeds: [embed],
+                            components: [buttons]
+                        }
+                    );
+                };
+
+                let timestamp: number;
+                const reconnectDelay = 300000;
+                const getTimestamp = () => {
+                    const now = Date.now();
+                    if (!timestamp || now - timestamp > 100) {
+                        timestamp = now;
+                    }
+                    return timestamp;
+                };
+
+                bot.once("ready", () => {
+                    wasReady = true;
+                });
 
                 bot.once("loginFailure", () => {
                     bot.end();
                     this.bots.delete(botCacheId);
                 });
 
-                bot.once("end", () => {
+                bot.once("kick", msg => {
+                    if (
+                        !bot.lastJoinTimestamp ||
+                        getTimestamp() - bot.lastJoinTimestamp >= reconnectDelay
+                    ) {
+                        return;
+                    }
+
+                    alert("kicked", { name: "Reason", value: msg.toString() });
+                });
+
+                bot.once("error", err => {
+                    bot.end();
                     this.bots.delete(botCacheId);
+
+                    alert("disconnected due to an error", {
+                        name: "Error message",
+                        value: err.message
+                    });
+                });
+
+                bot.once("end", reason => {
+                    this.bots.delete(botCacheId);
+
+                    // Send alert
+                    if (
+                        !bot.lastJoinTimestamp ||
+                        getTimestamp() - bot.lastJoinTimestamp < reconnectDelay
+                    ) {
+                        setTimeout(() => {
+                            alert("disconnected", {
+                                name: "Reason",
+                                value: reason ?? "No reason given"
+                            });
+                        }, 100);
+                        return;
+                    }
+
+                    // Restart bot
+                    this.client.logger.verbose(
+                        `[McBotsManager] ${p.username}: Restarting after end`
+                    );
+                    this.startBot(p);
                 });
                 res(bot);
             };
@@ -145,7 +262,7 @@ export class McBotsManager {
                 const bot = this.bots.get(`${p.server.network}_${p.username}`);
                 if (!bot) return;
 
-                bot.end();
+                bot.end(true);
                 return "stopped";
             }
         }

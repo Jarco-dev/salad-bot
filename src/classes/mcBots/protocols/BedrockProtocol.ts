@@ -289,7 +289,8 @@ export class BedrockProtocol extends Protocol {
         });
     }
 
-    public end() {
+    public end(safeEnd?: boolean) {
+        this.safeEnd = !!safeEnd;
         this.bot.disconnect();
     }
 }

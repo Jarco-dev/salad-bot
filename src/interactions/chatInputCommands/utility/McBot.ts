@@ -408,7 +408,7 @@ export default class McBotChatInputCommand extends ChatInputCommand {
                 // Automatically update message when needed
                 const doneBots: McUsernames<"java" | "bedrock">[] = [];
                 let showMsaButton = false;
-                const update = () => {
+                const update = () =>
                     this.client.sender.reply(
                         i,
                         {
@@ -417,14 +417,17 @@ export default class McBotChatInputCommand extends ChatInputCommand {
                         },
                         { method: "EDIT_REPLY" }
                     );
-                };
                 const interval = setInterval(() => {
                     if (doneBots.length === usernames.length) {
                         clearInterval(interval);
                         embed.setTitle(`Started ${usernames.length} bot(s)`);
                         updateMsg = true;
                     }
-                    if (updateMsg) update();
+                    if (updateMsg) {
+                        update().catch(() => {
+                            clearInterval(interval);
+                        });
+                    }
                 }, 2500);
                 setTimeout(() => {
                     clearInterval(interval);
@@ -438,7 +441,7 @@ export default class McBotChatInputCommand extends ChatInputCommand {
                                 server
                             });
                         });
-                    update();
+                    update().catch(() => {});
                 }, 600000);
                 update();
 
