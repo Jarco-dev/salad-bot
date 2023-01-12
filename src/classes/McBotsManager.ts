@@ -119,20 +119,15 @@ export class McBotsManager {
                 const bot = startFunction();
                 this.bots.set(botCacheId, bot);
                 let alerted = false;
+                let wasReady = false;
                 const alert = (
                     title: string,
                     field: { name: string; value: string }
                 ) => {
-                    if (bot.status !== "ready" || alerted) return;
+                    if (!wasReady || alerted) {
+                        return;
+                    }
                     alerted = true;
-                    console.log(
-                        p.type.charAt(0).toUpperCase() +
-                            p.type
-                                .split(/(?=[A-Z])/)
-                                .join(" ")
-                                .toLowerCase()
-                                .slice(1)
-                    );
                     const embed = this.client.utils
                         .defaultEmbed()
                         .setColor(this.client.config.MSG_TYPES.ERROR.COLOR)
@@ -181,12 +176,33 @@ export class McBotsManager {
                     );
                 };
 
+                let timestamp: number;
+                const reconnectDelay = 900000;
+                const getTimestamp = () => {
+                    const now = Date.now();
+                    if (!timestamp || now - timestamp > 100) {
+                        timestamp = now;
+                    }
+                    return timestamp;
+                };
+
+                bot.once("ready", () => {
+                    wasReady = true;
+                });
+
                 bot.once("loginFailure", () => {
                     bot.end();
                     this.bots.delete(botCacheId);
                 });
 
                 bot.once("kick", msg => {
+                    if (
+                        !bot.lastJoinTimestamp ||
+                        getTimestamp() - bot.lastJoinTimestamp >= reconnectDelay
+                    ) {
+                        return;
+                    }
+
                     alert("kicked", { name: "Reason", value: msg.toString() });
                 });
 
@@ -203,10 +219,25 @@ export class McBotsManager {
                 bot.once("end", reason => {
                     this.bots.delete(botCacheId);
 
-                    alert("disconnected", {
-                        name: "Reason",
-                        value: reason ?? "No reason given"
-                    });
+                    // Send alert
+                    if (
+                        !bot.lastJoinTimestamp ||
+                        getTimestamp() - bot.lastJoinTimestamp < reconnectDelay
+                    ) {
+                        setTimeout(() => {
+                            alert("disconnected", {
+                                name: "Reason",
+                                value: reason ?? "No reason given"
+                            });
+                        }, 100);
+                        return;
+                    }
+
+                    // Restart bot
+                    this.client.logger.verbose(
+                        `[McBotsManager] ${p.username}: Restarting after end`
+                    );
+                    this.startBot(p);
                 });
                 res(bot);
             };
